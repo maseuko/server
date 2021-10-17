@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 exports.register = (req, res, next) => {
 
 }
