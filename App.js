@@ -15,4 +15,4 @@ mongoose.connect("mongodb+srv://fiszki:EeCvno0cLPJeNudM@cluster0.tveju.mongodb.n
     console.log("Couldn't connect with mongoDB.");
 });
 
-
+const jebacDisa = "OrkaAnubisa";
