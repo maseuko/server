@@ -11,7 +11,7 @@ Przyjmuje obiekt o strukturze:<br>
   username: username,<br>
   email: email, <br>
   password: password<br>
-}<br><br>
+}<br>
 
 Zwraca statusy:<br><br>
 
