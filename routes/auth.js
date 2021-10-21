@@ -7,17 +7,17 @@ const router = express.Router();
 
 router.post('/register', checkSchema({
     username: {
-        require: true,
+        isEmpty: false,
         errorMessage: "Invalid username.",
         isAlphanumeric: true
     },
     email: {
-        require: true,
+        isEmpty: false,
         isEmail: true,
         errorMessage: "Invalid email."
     },
     password: {
-        require: true,
+        isEmpty: false,
         isAlphanumeric: true,
         errorMessage: "Invalid password."
     }

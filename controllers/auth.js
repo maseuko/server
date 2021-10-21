@@ -25,9 +25,9 @@ exports.register = (req, res, next) => {
             newUser.save().then(response => {
                 res.status(201).json({msg: "User created succesfully!"});
             }).catch(err => {
-                const err = new Error("Couldn't create a user.");
-                err.statusCode = 409;
-                throw err;
+                const error = new Error("Couldn't create a user.");
+                error.statusCode = 409;
+                throw error;
             });
         }).catch(err => {
             if(err.statusCode){

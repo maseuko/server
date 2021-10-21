@@ -14,6 +14,6 @@ const userSchema = new Schema({
         type: String,
         required: true
     }
-}, {timestamps});
+}, {timestamps: true});
 
 module.exports = mongodb.model('User', userSchema);
