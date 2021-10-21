@@ -20,3 +20,4 @@ Zwraca statusy:
 403 - Email juz istnieje
 409 - Chuj wie co sie odjebalo w mongodb ale nie udalo sie utworzyc usera
 
+
