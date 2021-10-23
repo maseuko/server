@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const isLogged = require('./middlewares/is-auth');
 
 const auth = require('./routes/auth');
 
@@ -13,7 +14,7 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
-app.use(auth);
+app.use(!isLogged, auth);
 
 app.use((err, req, res, next) => {
     if(err.statusCode){
