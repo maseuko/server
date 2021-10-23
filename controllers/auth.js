@@ -74,9 +74,12 @@ exports.login = (req, res, next) => {
                 const rememberMeToken = jwt.sign({
                     username: user.username,
                     email: email
-                }, JWT_SECRET);
+                }, JWT_SECRET, {expiresIn: "30d"});
 
-                userPayload.rememberMeToken = rememberMeToken;
+                userPayload.rememberMeToken = {
+                    token: rememberMeToken,
+                    expire: new Date().setMonth(new Date().getMonth() + 1)
+                };
             }
 
             res.status(200).json({msg: "Logged in.", auth: userPayload});
