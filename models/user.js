@@ -13,6 +13,13 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true
+    },
+    isAuthorized: {
+        type: Boolean,
+        required: true
+    },
+    authorizedToken: {
+        type: String
     }
 }, {timestamps: true});
 
