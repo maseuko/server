@@ -55,5 +55,9 @@ router.post(
 );
 
 router.post("/authorize/:uid/:token", authController.authorizeAccount);
+router.get("/authorize/reset", authController.getReset);
+router.post("/authorize/reset", authController.postReset);
+router.get("/authorize/reset/:token", authController.getNewPassword);
+router.post("/authorize/new-password", authController.postNewPassword);
 
 module.exports = router;

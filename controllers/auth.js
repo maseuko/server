@@ -145,3 +145,82 @@ exports.authorizeAccount = async (req, res, next) => {
     throw error;
   }
 };
+
+exports.getReset = (req,res,next) => {
+  const errors = validationResult(req).toArray();
+  if (errors.length > 0) {
+    return res.status(400).json({ msg: "Something is wrong. Can't reset your password!", err: errors }); //chuj wie czy dobry error jest
+  }
+};
+
+exports.postReset = (req, res, next) => {
+  crypto.randomBytes(32, (err, buffer) => {
+    //   if(err) {
+    //     console.log(err);
+    //     return res.redirect('/authorize/reset');
+    //  }
+    const token = buffer.toString("hex");
+
+    User.findOne({ email: req.body.email })
+      .then((user) => {
+        if (!user) {
+          return res.status(404).json({ msg: "User not found." });
+        }
+        user.resetToken = token;
+        user.resetTokenExpiration = Date.now() + 3600000;
+        return user.save();
+      })
+      .then((result) => {
+        res.redirect("/");
+        sendgrid.send({
+          from: "mateuszgorczowski3@gmail.com",
+          to: user.email,
+          subject: "Zresetuj swoje haslo wariacie!",
+          html: `<h1>Cześć ${username}</h1>
+                        <p>Chcesz zresetowac swoje haslo.</p>
+                        <p>Aby to zrobic, kliknij w link: <a href="
+                          "http://localhost:8080/authorize/reset/${token}"></a></p>
+                `,
+        });
+      })
+      .catch((err) => Err.err(err));
+  });
+};
+
+exports.getNewPassword = (req,res,next) => {
+  const token  = req.params.token;
+  User.findOne({resetToken: token, resetTokenExpiration: {$gt: Date.now()}})
+  .then(user => {
+    const errors = validationResult(req).toArray();
+  if (errors.length > 0) {
+    return res.status(400).json({ msg: "Can't read your new password!", err: errors }); //chuj wie czy dobry error jest
+  }
+  // tu by cos pasowalo zrobic  uid: user._id.toString()
+  })
+  .catch((err) => Err.err(err));
+  const errors = validationResult(req).toArray();
+  if (errors.length > 0) {
+    return res.status(400).json({ msg: "Can't read your new password!", err: errors }); //chuj wie czy dobry error jest
+  }
+}
+
+exports.postNewPassword = (req,res,next) => {
+
+  const newPassword = req.body.password;
+  const uid = req.body.uid;
+  const passwordToken = req.body.passwordToken;
+  let resetUser;
+
+  User.findOne({resetToken: passwordToken, resetTokenExpiration: {$gt: Date.now() },_id: uid})
+  .then(user => {
+    resetUser = user;
+    return bcrypt.hash(newPassword, 12)
+  })
+  .then(hashedPassword =>{
+      resetUser.password = hashedPassword;
+      resetUser.resetToken = null;
+      resetUser.resetTokenExpiration = undefined;
+      return resetUser.save();
+  })
+  .catch((err) => Err.err(err));
+};

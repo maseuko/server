@@ -20,7 +20,9 @@ const userSchema = new Schema({
     },
     authorizedToken: {
         type: String
-    }
+    },
+    resetToken: String,
+    resetTokenExpiration: Date
 }, {timestamps: true});
 
 module.exports = mongodb.model('User', userSchema);
