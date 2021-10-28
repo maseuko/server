@@ -187,40 +187,47 @@ exports.postReset = (req, res, next) => {
   });
 };
 
-exports.getNewPassword = (req,res,next) => {
-  const token  = req.params.token;
-  User.findOne({resetToken: token, resetTokenExpiration: {$gt: Date.now()}})
-  .then(user => {
-    const errors = validationResult(req).toArray();
-  if (errors.length > 0) {
-    return res.status(400).json({ msg: "Can't read your new password!", err: errors }); //chuj wie czy dobry error jest
-  }
-  // tu by cos pasowalo zrobic  uid: user._id.toString()
-  })
-  .catch((err) => Err.err(err));
+exports.getNewPassword = (req, res, next) => {
+  const token = req.params.token;
+  User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
+    .then((user) => {
+      const errors = validationResult(req).toArray();
+      if (errors.length > 0) {
+        return res
+          .status(400)
+          .json({ msg: "Can't read your new password!", err: errors }); //chuj wie czy dobry error jest
+      }
+      // tu by cos pasowalo zrobic  uid: user._id.toString()
+    })
+    .catch((err) => Err.err(err));
   const errors = validationResult(req).toArray();
   if (errors.length > 0) {
-    return res.status(400).json({ msg: "Can't read your new password!", err: errors }); //chuj wie czy dobry error jest
+    return res
+      .status(400)
+      .json({ msg: "Can't read your new password!", err: errors }); //chuj wie czy dobry error jest
   }
-}
+};
 
-exports.postNewPassword = (req,res,next) => {
-
+exports.postNewPassword = (req, res, next) => {
   const newPassword = req.body.password;
   const uid = req.body.uid;
   const passwordToken = req.body.passwordToken;
   let resetUser;
 
-  User.findOne({resetToken: passwordToken, resetTokenExpiration: {$gt: Date.now() },_id: uid})
-  .then(user => {
-    resetUser = user;
-    return bcrypt.hash(newPassword, 12)
+  User.findOne({
+    resetToken: passwordToken,
+    resetTokenExpiration: { $gt: Date.now() },
+    _id: uid,
   })
-  .then(hashedPassword =>{
+    .then((user) => {
+      resetUser = user;
+      return bcrypt.hash(newPassword, 12);
+    })
+    .then((hashedPassword) => {
       resetUser.password = hashedPassword;
       resetUser.resetToken = null;
       resetUser.resetTokenExpiration = undefined;
       return resetUser.save();
-  })
-  .catch((err) => Err.err(err));
+    })
+    .catch((err) => Err.err(err));
 };
