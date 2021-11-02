@@ -22,8 +22,9 @@ app.use(express.json());
 app.use(auth);
 
 app.use((err, req, res, next) => {
+  console.log(err);
   if (err.statusCode) {
-    return res.status(err.statusCode).json({ msg: err.msg });
+    return res.status(err.statusCode).json({ msg: err });
   }
   res.status(500).json({ msg: "Server failed." });
 });
@@ -33,7 +34,7 @@ mongoose
     "mongodb+srv://fiszki:EeCvno0cLPJeNudM@cluster0.tveju.mongodb.net/fiszki?retryWrites=true&w=majority"
   )
   .then((res) => {
-    app.listen(process.env.PORT || 8080);
+    app.listen(8080);
   })
   .catch(() => {
     console.log("Couldn't connect with mongoDB.");

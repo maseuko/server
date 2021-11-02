@@ -5,14 +5,16 @@ const Err = require("../utils/err");
 const sendgrid = require("@sendgrid/mail");
 const constants = require("../constants/constants");
 const crypto = require("crypto");
+const mongoose = require("mongoose");
 
 sendgrid.setApiKey(constants.SENDGRID_KEY);
 
 const User = require("../models/user");
+const { Mongoose } = require("mongoose");
 const JWT_SECRET = constants.JWT_SECRET;
 
 exports.register = async (req, res, next) => {
-  const errors = validationResult(req).toArray();
+  const errors = validationResult(req).errors;
 
   if (errors.length > 0) {
     return res.status(400).json({ msg: "Invalid user input.", err: errors });
@@ -36,8 +38,10 @@ exports.register = async (req, res, next) => {
         password: hash,
         isAuthorized: false,
         authorizedToken: token,
+        permissions: [],
       });
       const savedUser = await newUser.save();
+      res.status(201).json({ msg: "User created succesfully!" });
       const mail = await sendgrid.send({
         from: "mateuszgorczowski3@gmail.com",
         to: email,
@@ -48,20 +52,19 @@ exports.register = async (req, res, next) => {
                           savedUser._id.toString() +
                           "/" +
                           token
-                        }"></a></p>
+                        }">Kliknij tutaj misiu :*</a></p>
                 `,
       });
-      res.status(201).json({ msg: "User created succesfully!" });
     });
   } catch (err) {
     const error = new Error("Couldn't create a user.");
     error.statusCode = 409;
-    throw error;
+    next(error);
   }
 };
 
-exports.login = (req, res, next) => {
-  const errors = validationResult(req).toArray();
+exports.login = async (req, res, next) => {
+  const errors = validationResult(req).errors;
 
   if (errors.length > 0) {
     return res.status(400).json({ msg: "Invalid user input.", err: errors });
@@ -73,161 +76,202 @@ exports.login = (req, res, next) => {
 
   const userPayload = {};
 
-  User.findOne({ email: email })
-    .then((user) => {
-      if (!user) {
-        return res
-          .status(404)
-          .json({ msg: "User with such an email not found." });
-      }
-      bcrypt.compare(password, user.password).then((isValid) => {
-        if (!isValid) {
-          return res.status(400).json({ msg: "Passwords not match." });
-        }
+  try {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ msg: "User with such an email not found." });
+    }
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      return res.status(400).json({ msg: "Passwords not match." });
+    }
+    const token = jwt.sign(
+      {
+        uid: user._id.toString(),
+      },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    const expTimeForToken = new Date();
+    expTimeForToken.setHours(expTimeForToken.getHours() + 1);
+    userPayload.UID = user._id.toString();
+    userPayload.token = {
+      token,
+      expire: expTimeForToken,
+    };
+    if (rememberMe) {
+      const rememberMeToken = jwt.sign(
+        {
+          username: user.username,
+          email: email,
+        },
+        JWT_SECRET,
+        { expiresIn: "30d" }
+      );
 
-        const token = jwt.sign(
-          {
-            uid: user._id.toString(),
-          },
-          JWT_SECRET,
-          { expiresIn: "1h" }
-        );
+      userPayload.rememberMeToken = {
+        token: rememberMeToken,
+        expire: new Date().setMonth(new Date().getMonth() + 1),
+      };
+    }
 
-        userPayload.UID = user._id.toString();
-        userPayload.token = {
-          token,
-          expire: new Date().setHours(new Date().getHours + 1),
-        };
-
-        if (rememberMe) {
-          const rememberMeToken = jwt.sign(
-            {
-              username: user.username,
-              email: email,
-            },
-            JWT_SECRET,
-            { expiresIn: "30d" }
-          );
-
-          userPayload.rememberMeToken = {
-            token: rememberMeToken,
-            expire: new Date().setMonth(new Date().getMonth() + 1),
-          };
-        }
-
-        res.status(200).json({ msg: "Logged in.", auth: userPayload });
-      });
-    })
-    .catch((err) => Err.err(err));
+    res.status(200).json({ msg: "Logged in.", auth: userPayload });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.authorizeAccount = async (req, res, next) => {
   const uid = req.params.uid;
   const token = req.params.token;
 
+  const error = new Error();
+
   try {
     const user = await User.findById(uid);
     if (!user) {
-      return res.status(404).json({ msg: "User not found." });
+      error.statusCode = 404;
+      error.msg = "User not found.";
+      throw error;
     }
     if (user.isAuthorized) {
-      return res.status(403).json({ msg: "User already authorized." });
+      error.statusCode = 403;
+      error.msg = "User already authorized.";
+      throw error;
     }
     if (user.authorizedToken !== token) {
-      return res.status(403).json({ msg: "Tokens not match." });
+      error.statusCode = 403;
+      error.msg = "Tokens not match.";
+      throw error;
     }
     user.isAuthorized = true;
     await user.save();
     res.status(200).json({ msg: "Account authorized." });
   } catch (err) {
-    const error = new Error("Couldn't authorize user.");
-    error.statusCode = 400;
-    throw error;
+    next(err);
   }
 };
 
-exports.getReset = (req,res,next) => {
-  const errors = validationResult(req).toArray();
+exports.getReset = (req, res, next) => {
+  const errors = validationResult(req).errors;
+
   if (errors.length > 0) {
-    return res.status(400).json({ msg: "Something is wrong. Can't reset your password!", err: errors }); //chuj wie czy dobry error jest
+    return res.status(400).json({ msg: "Invalid user input.", err: errors });
   }
-};
+  const error = new Error();
 
-exports.postReset = (req, res, next) => {
-  crypto.randomBytes(32, (err, buffer) => {
-    //   if(err) {
-    //     console.log(err);
-    //     return res.redirect('/authorize/reset');
-    //  }
+  crypto.randomBytes(32, async (err, buffer) => {
     const token = buffer.toString("hex");
 
-    User.findOne({ email: req.body.email })
-      .then((user) => {
-        if (!user) {
-          return res.status(404).json({ msg: "User not found." });
-        }
-        user.resetToken = token;
-        user.resetTokenExpiration = Date.now() + 3600000;
-        return user.save();
-      })
-      .then((result) => {
-        res.redirect("/");
-        sendgrid.send({
-          from: "mateuszgorczowski3@gmail.com",
-          to: user.email,
-          subject: "Zresetuj swoje haslo wariacie!",
-          html: `<h1>Cześć ${username}</h1>
+    try {
+      const user = await User.findOne({ email: req.body.email });
+
+      if (!user) {
+        error.statusCode = 404;
+        error.msg = "User not found.";
+        throw error;
+      }
+
+      user.resetToken = token;
+      user.resetTokenExpiration = Date.now() + 3600000;
+      const result = await user.save();
+
+      const mail = await sendgrid.send({
+        from: "mateuszgorczowski3@gmail.com",
+        to: user.email,
+        subject: "Zresetuj swoje haslo wariacie!",
+        html: `<h1>Cześć ${user.username}</h1>
                         <p>Chcesz zresetowac swoje haslo.</p>
-                        <p>Aby to zrobic, kliknij w link: <a href="
-                          "http://localhost:8080/authorize/reset/${token}"></a></p>
+                        <p>Aby to zrobic, kliknij w link: <a href=
+                          "http://localhost:3000/authorize/reset/${user._id.toString()}/${token}">Zresetuj haslo</a></p>
                 `,
-        });
-      })
-      .catch((err) => Err.err(err));
+      });
+      res.status(200).json({ msg: "Sendend reset mail." });
+    } catch (err) {
+      next(err);
+    }
   });
 };
 
-exports.getNewPassword = (req, res, next) => {
-  const token = req.params.token;
-  User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
-    .then((user) => {
-      const errors = validationResult(req).toArray();
-      if (errors.length > 0) {
-        return res
-          .status(400)
-          .json({ msg: "Can't read your new password!", err: errors }); //chuj wie czy dobry error jest
-      }
-      // tu by cos pasowalo zrobic  uid: user._id.toString()
-    })
-    .catch((err) => Err.err(err));
-  const errors = validationResult(req).toArray();
+exports.checkResetToken = async (req, res, next) => {
+  const errors = validationResult(req).errors;
+
   if (errors.length > 0) {
-    return res
-      .status(400)
-      .json({ msg: "Can't read your new password!", err: errors }); //chuj wie czy dobry error jest
+    return res.status(400).json({ msg: "Invalid user input.", err: errors });
+  }
+
+  const error = new Error();
+
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      error.statusCode = 404;
+      error.msg = "There is no such a user.";
+      throw error;
+    }
+
+    if (!(user.resetToken === req.body.token)) {
+      error.statusCode = 400;
+      error.msg = "Invalid token.";
+      throw error;
+    }
+
+    const tokenExpDate = new Date(user.resetTokenExpiration);
+
+    if (!(tokenExpDate > Date.now())) {
+      error.statusCode = 400;
+      error.msg = "Token expired";
+      throw error;
+    }
+
+    res.status(200).json({ msg: "Token is valid." });
+  } catch (err) {
+    next(err);
   }
 };
 
-exports.postNewPassword = (req, res, next) => {
+exports.postNewPassword = async (req, res, next) => {
   const newPassword = req.body.password;
   const uid = req.body.uid;
   const passwordToken = req.body.passwordToken;
-  let resetUser;
+  const error = new Error();
 
-  User.findOne({
-    resetToken: passwordToken,
-    resetTokenExpiration: { $gt: Date.now() },
-    _id: uid,
-  })
-    .then((user) => {
-      resetUser = user;
-      return bcrypt.hash(newPassword, 12);
-    })
-    .then((hashedPassword) => {
-      resetUser.password = hashedPassword;
-      resetUser.resetToken = null;
-      resetUser.resetTokenExpiration = undefined;
-      return resetUser.save();
-    })
-    .catch((err) => Err.err(err));
+  try {
+    const user = await User.findOne({
+      resetToken: passwordToken,
+      resetTokenExpiration: { $gt: Date.now() },
+      // _id: mongoose.Types.ObjectId(uid),
+    });
+
+    if (!user) {
+      error.statusCode = 404;
+      error.msg = "There is no such a user.";
+      throw error;
+    }
+
+    if (!(user.resetToken === passwordToken)) {
+      error.statusCode = 400;
+      error.msg = "Invalid token.";
+      throw error;
+    }
+
+    const tokenExpDate = new Date(user.resetTokenExpiration);
+
+    if (!(tokenExpDate > Date.now())) {
+      error.statusCode = 400;
+      error.msg = "Token expired";
+      throw error;
+    }
+
+    const newHashedPassword = await bcrypt.hash(newPassword, 20);
+    user.password = newHashedPassword;
+    user.resetToken = null;
+    user.resetTokenExpiration = undefined;
+    await user.save();
+    res.status(202).json({ msg: "Password changed." });
+  } catch (err) {
+    next(err);
+  }
 };

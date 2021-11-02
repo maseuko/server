@@ -1,28 +1,41 @@
-const mongodb = require('mongoose');
+const mongodb = require("mongoose");
 const Schema = mongodb.Schema;
 
-const userSchema = new Schema({
+const userSchema = new Schema(
+  {
     username: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     email: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     password: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     isAuthorized: {
-        type: Boolean,
-        required: true
+      type: Boolean,
+      required: true,
     },
     authorizedToken: {
-        type: String
+      type: String,
     },
     resetToken: String,
-    resetTokenExpiration: Date
-}, {timestamps: true});
+    resetTokenExpiration: Date,
+    permissions: [
+      {
+        courseId: {
+          type: String,
+          required: true,
+        },
+        modify: Boolean,
+      },
+    ],
+    headAdmin: Boolean,
+  },
+  { timestamps: true }
+);
 
-module.exports = mongodb.model('User', userSchema);
+module.exports = mongodb.model("User", userSchema);
