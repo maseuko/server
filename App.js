@@ -1,25 +1,30 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const auth = require("./routes/auth");
+const admin = require("./routes/admin");
 
 const app = express();
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "X-Requested-With,content-type"
-  );
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+//   );
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "X-Requested-With,content-type"
+//   );
+//   next();
+// });
+
+app.use(cors());
 
 app.use(express.json());
 app.use(auth);
+app.use(admin);
 
 app.use((err, req, res, next) => {
   console.log(err);

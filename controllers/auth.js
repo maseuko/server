@@ -10,7 +10,6 @@ const mongoose = require("mongoose");
 sendgrid.setApiKey(constants.SENDGRID_KEY);
 
 const User = require("../models/user");
-const { Mongoose } = require("mongoose");
 const JWT_SECRET = constants.JWT_SECRET;
 
 exports.register = async (req, res, next) => {
@@ -29,7 +28,7 @@ exports.register = async (req, res, next) => {
     if (user) {
       return res.status(403).json({ msg: "This email already exists." });
     }
-    const hash = await bcrypt.hash(password, 20);
+    const hash = await bcrypt.hash(password, 12);
     crypto.randomBytes(32, async (err, buffer) => {
       const token = buffer.toString("hex");
       const newUser = new User({
@@ -75,9 +74,10 @@ exports.login = async (req, res, next) => {
   const rememberMe = req.body.rememberMe;
 
   const userPayload = {};
-
+  console.log(req.body);
   try {
     const user = await User.findOne({ email: email });
+    console.log(user);
     if (!user) {
       return res
         .status(404)
@@ -117,7 +117,10 @@ exports.login = async (req, res, next) => {
       };
     }
 
-    res.status(200).json({ msg: "Logged in.", auth: userPayload });
+    res
+      .setHeader("Content-Type", "application/json")
+      .status(200)
+      .json({ msg: "Logged in.", auth: userPayload });
   } catch (err) {
     next(err);
   }
