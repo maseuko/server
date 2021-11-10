@@ -1,0 +1,1 @@
+exports.CURRENT_COURSES = [];

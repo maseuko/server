@@ -2,8 +2,8 @@ const CourseManager = require("../models/CourseManager");
 
 exports.createCourse = async (req, res, next) => {
   try {
-    const result = await CourseManager.addCourse("Ultra Nowe Cos gigakox haha");
-    res.status(201).json({ msg: "Resource created succesfully." });
+    const result = await CourseManager.addCourse("Dawid Gigga Koks");
+    res.status(201).json(result);
   } catch (err) {
     console.log("ok2");
     next(err);

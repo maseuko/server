@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const Course = require("./models/courses");
+const COURSEDB = require("./constants/database").CURRENT_COURSES;
 
 const auth = require("./routes/auth");
 const admin = require("./routes/admin");
@@ -39,7 +41,13 @@ mongoose
     "mongodb+srv://fiszki:EeCvno0cLPJeNudM@cluster0.tveju.mongodb.net/fiszki?retryWrites=true&w=majority"
   )
   .then((res) => {
-    app.listen(8080);
+    Course.find({}, (err, course) => {
+      if (err) {
+        throw err;
+      }
+      COURSEDB.push(course);
+      app.listen(8080);
+    });
   })
   .catch(() => {
     console.log("Couldn't connect with mongoDB.");
