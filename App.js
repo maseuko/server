@@ -1,6 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
+
 const Course = require("./models/courses");
 const COURSEDB = require("./constants/database").CURRENT_COURSES;
 
@@ -8,6 +11,7 @@ const auth = require("./routes/auth");
 const admin = require("./routes/admin");
 
 const app = express();
+const upload = multer({ dest: path.join(__dirname, "./images/") });
 
 // app.use((req, res, next) => {
 //   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -25,6 +29,8 @@ const app = express();
 app.use(cors());
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 app.use(auth);
 app.use(admin);
 

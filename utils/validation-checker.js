@@ -8,7 +8,6 @@ module.exports = (req) => {
     error.msg = "Invalid user input.";
     error.err = errors;
     error.statusCode = 400;
-    console.log(error);
     throw error;
   }
 };

@@ -32,8 +32,8 @@ class CourseManager {
 
       const filePath = path.join(__dirname, `../data/${fileName}`);
 
-      fs.access(filePath, (exists) => {
-        if (exists) {
+      fs.access(filePath, (notExists) => {
+        if (notExists) {
           fs.appendFile(filePath, "[]", async () => {
             const newCourse = new Course({
               name: name,
@@ -59,7 +59,6 @@ class CourseManager {
   static async removeCourse(id) {
     try {
       const course = await Course.findById(id);
-
       if (!course) {
         const err = new Error();
         err.msg = "Resource not exists.";
@@ -67,18 +66,50 @@ class CourseManager {
         throw err;
       }
 
-      fs.access(course.path, async (exists) => {
-        if (exists) {
-          fs.unlinkSync(course.path);
-          const deletedCourse = await Course.findByIdAndDelete(id);
-          return {
-            msg: "Course deleted succesfully.",
-          };
+      fs.access(course.path, async (notExists) => {
+        if (!notExists) {
+          try {
+            fs.unlink(course.path.toString(), (err) => {
+              if (err) {
+                err.statusCode = 409;
+                throw err;
+              }
+            });
+            const deletedCourse = await Course.findByIdAndDelete(id);
+            return {
+              msg: "Course deleted succesfully.",
+            };
+          } catch (err) {
+            throw err;
+          }
         }
       });
     } catch (err) {
       throw err;
     }
+  }
+
+  static fetchAll(id, cb) {
+    let course = COURSEDB[0].filter(
+      (course) => course._id.toString() === id.toString()
+    );
+    course = course[0];
+    fs.readFile(course.path, (err, data) => {
+      if (data) {
+        cb(JSON.parse(data));
+      } else {
+        cb([]);
+      }
+    });
+  }
+
+  static updateFile(id, value) {
+    let course = COURSEDB[0].filter(
+      (course) => course._id.toString() === id.toString()
+    );
+    course = course[0];
+
+    fs.writeFile(course.path, JSON.stringify(value), () => {});
   }
 }
 
