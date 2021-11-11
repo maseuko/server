@@ -6,7 +6,7 @@ const COURSEDB = require("../constants/database").CURRENT_COURSES;
 class CourseManager {
   static async addCourse(name) {
     try {
-      const course = await Course.findOne({ name: name });
+      const course = await Course.findOne({ name: name.trim() });
 
       if (course) {
         const err = new Error();

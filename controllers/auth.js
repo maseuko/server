@@ -1,29 +1,30 @@
+//Zewnetrzne paczki
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { validationResult } = require("express-validator");
-const Err = require("../utils/err");
 const sendgrid = require("@sendgrid/mail");
-const constants = require("../constants/constants");
 const crypto = require("crypto");
 const mongoose = require("mongoose");
 
-sendgrid.setApiKey(constants.SENDGRID_KEY);
+//Paczki walidacyjne
+const Err = require("../utils/err");
+const validationChecker = require("../utils/validation-checker");
 
+//Modele
 const User = require("../models/user");
+
+//Stale
+const constants = require("../constants/constants");
 const JWT_SECRET = constants.JWT_SECRET;
 
+sendgrid.setApiKey(constants.SENDGRID_KEY);
+
 exports.register = async (req, res, next) => {
-  const errors = validationResult(req).errors;
-
-  if (errors.length > 0) {
-    return res.status(400).json({ msg: "Invalid user input.", err: errors });
-  }
-
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
-
   try {
+    validationChecker(req);
+
     const user = await User.findOne({ email: email });
     if (user) {
       return res.status(403).json({ msg: "This email already exists." });
@@ -56,26 +57,19 @@ exports.register = async (req, res, next) => {
       });
     });
   } catch (err) {
-    const error = new Error("Couldn't create a user.");
-    error.statusCode = 409;
-    next(error);
+    next(err);
   }
 };
 
 exports.login = async (req, res, next) => {
-  const errors = validationResult(req).errors;
-
-  if (errors.length > 0) {
-    return res.status(400).json({ msg: "Invalid user input.", err: errors });
-  }
-
   const email = req.body.email;
   const password = req.body.password;
   const rememberMe = req.body.rememberMe;
-
   const userPayload = {};
-  console.log(req.body);
+
   try {
+    validationChecker(req);
+
     const user = await User.findOne({ email: email });
     console.log(user);
     if (!user) {
@@ -122,7 +116,7 @@ exports.login = async (req, res, next) => {
       .status(200)
       .json({ msg: "Logged in.", auth: userPayload });
   } catch (err) {
-    next(err);
+    Err.err(err, next);
   }
 };
 
@@ -133,6 +127,7 @@ exports.authorizeAccount = async (req, res, next) => {
   const error = new Error();
 
   try {
+    validationChecker(req);
     const user = await User.findById(uid);
     if (!user) {
       error.statusCode = 404;
@@ -158,17 +153,14 @@ exports.authorizeAccount = async (req, res, next) => {
 };
 
 exports.getReset = (req, res, next) => {
-  const errors = validationResult(req).errors;
-
-  if (errors.length > 0) {
-    return res.status(400).json({ msg: "Invalid user input.", err: errors });
-  }
   const error = new Error();
 
   crypto.randomBytes(32, async (err, buffer) => {
     const token = buffer.toString("hex");
 
     try {
+      validationChecker(req);
+
       const user = await User.findOne({ email: req.body.email });
 
       if (!user) {
@@ -199,15 +191,10 @@ exports.getReset = (req, res, next) => {
 };
 
 exports.checkResetToken = async (req, res, next) => {
-  const errors = validationResult(req).errors;
-
-  if (errors.length > 0) {
-    return res.status(400).json({ msg: "Invalid user input.", err: errors });
-  }
-
   const error = new Error();
 
   try {
+    validationChecker(req);
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
       error.statusCode = 404;
@@ -242,6 +229,7 @@ exports.postNewPassword = async (req, res, next) => {
   const error = new Error();
 
   try {
+    validationChecker(req);
     const user = await User.findOne({
       resetToken: passwordToken,
       resetTokenExpiration: { $gt: Date.now() },
