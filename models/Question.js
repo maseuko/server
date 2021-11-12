@@ -14,10 +14,11 @@ class Question {
     });
   }
 
-  save() {
+  save(cb) {
     CourseManager.fetchAll("618af965dc2fd39e0a018020", (data) => {
       data.push(this);
       CourseManager.updateFile("618af965dc2fd39e0a018020", data);
+      cb(this);
     });
   }
 

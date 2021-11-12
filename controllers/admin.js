@@ -26,19 +26,47 @@ exports.deleteCourse = async (req, res, next) => {
 };
 
 exports.addQuestion = (req, res, next) => {
+  const question = JSON.parse(req.body.question);
+  const courseId = req.body.courseId;
+  const correctAnswears = JSON.parse(req.body.correctAnswears);
+  const falseAnswears = JSON.parse(req.body.falseAnswears);
+  const questionType = req.body.questionType;
+
+  if (question.type === "mixed") {
+    const file = req.files.filter(
+      (jpg) => jpg.originalname === question.imageName
+    );
+    question.url = `localhost:8080\/images\/${file[0].filename}`;
+  }
+
+  for (let corrAnswear of correctAnswears) {
+    if (corrAnswear.type === "mixed") {
+      const file = req.files.filter(
+        (jpg) => jpg.originalname === corrAnswear.imageName
+      );
+      corrAnswear.url = `localhost:8080\/images\/${file[0].filename}`;
+    }
+  }
+
+  for (let falseAnswear of falseAnswears) {
+    if (falseAnswear.type === "mixed") {
+      const file = req.files.filter(
+        (jpg) => jpg.originalname === falseAnswear.imageName
+      );
+      falseAnswear.url = `localhost:8080\/images\/${file[0].filename}`;
+    }
+  }
   const pytanie = new Question(
-    "618af965dc2fd39e0a018020",
-    { type: "text", value: "Pierwsze pytanie." },
-    [{ type: "text", value: "Poprawna odp" }],
-    [
-      { type: "text", value: "Zla odp 1" },
-      { type: "text", value: "Zla odp 2" },
-      { type: "text", value: "Zla odp 3" },
-    ],
-    "single"
+    courseId,
+    question,
+    correctAnswears,
+    falseAnswears,
+    questionType
   );
 
-  pytanie.save();
+  pytanie.save((obj) => {
+    res.status(201).json({ msg: "Question added.", question: obj });
+  });
 };
 
 exports.fetchAllQuestions = (req, res, next) => {

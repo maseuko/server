@@ -9,9 +9,9 @@ const COURSEDB = require("./constants/database").CURRENT_COURSES;
 
 const auth = require("./routes/auth");
 const admin = require("./routes/admin");
+const images = require("./routes/images");
 
 const app = express();
-const upload = multer({ dest: path.join(__dirname, "./images/") });
 
 // app.use((req, res, next) => {
 //   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -33,6 +33,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(auth);
 app.use(admin);
+app.use(images);
 
 app.use((err, req, res, next) => {
   console.log(err);
