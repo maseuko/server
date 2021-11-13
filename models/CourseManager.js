@@ -111,6 +111,16 @@ class CourseManager {
 
     fs.writeFile(course.path, JSON.stringify(value), () => {});
   }
+
+  static findOne(courseId, questionId, cb) {
+    this.fetchAll(courseId, (questions) => {
+      const question = questions.filter(
+        (q) => q._id.toString() === questionId.toString()
+      );
+
+      cb(question[0]);
+    });
+  }
 }
 
 module.exports = CourseManager;

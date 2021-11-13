@@ -24,5 +24,7 @@ router.post("/add-course", admin.createCourse);
 router.post("/delete-course", admin.deleteCourse);
 router.post("/add-question", upload.array("images"), admin.addQuestion);
 router.get("/all", admin.fetchAllQuestions);
+router.get("/getOne", admin.fetchSingleQuestion);
+router.post("/remove-question", admin.removeQuestion);
 
 module.exports = router;

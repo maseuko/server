@@ -76,3 +76,34 @@ exports.fetchAllQuestions = (req, res, next) => {
     });
   } catch (err) {}
 };
+
+exports.fetchSingleQuestion = (req, res, next) => {
+  CourseManager.findOne(
+    "618af965dc2fd39e0a018020",
+    "664e562b361b187ae85b050a7dc7c05ccb39b44d734c06beef56b15559a33fe1",
+    (ques) => {
+      try {
+        if (!ques) {
+          const err = new Error();
+          err.msg = "Question not found.";
+          err.statusCode = 404;
+          throw err;
+        }
+        res.status(200).json(ques);
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+};
+
+exports.removeQuestion = (req, res, next) => {
+  const courseId = req.body.courseId;
+  const questionId = req.body.questionId;
+  Question.removeQuestion(courseId, questionId, (err) => {
+    if (err) {
+      return res.status(404).json({ msg: "Question not exists." });
+    }
+    res.status(200).json({ msg: "Question removed." });
+  });
+};
