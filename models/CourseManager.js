@@ -121,6 +121,16 @@ class CourseManager {
       cb(question[0]);
     });
   }
+
+  static removeImages(filesToDetach) {
+    filesToDetach.forEach((file) => {
+      fs.access(path.join(__dirname, "../images", file), (notExists) => {
+        if (!notExists) {
+          fs.unlink(path.join(__dirname, "../images", file), (err) => {});
+        }
+      });
+    });
+  }
 }
 
 module.exports = CourseManager;

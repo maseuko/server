@@ -4,21 +4,34 @@ const path = require("path");
 const CourseManager = require("./CourseManager");
 
 class Question {
-  constructor(courseId, question, correctAnswears, falseAnswears, type) {
+  constructor(courseId, question, correctAnswears, falseAnswears, type, _id) {
     this.courseId = courseId;
     this.question = question;
     this.correctAnswears = correctAnswears;
     this.falseAnswears = falseAnswears;
     this.type = type;
-    crypto.randomBytes(32, (err, result) => {
-      this._id = result.toString("hex");
-    });
+    if (!_id) {
+      crypto.randomBytes(32, (err, result) => {
+        this._id = result.toString("hex");
+      });
+    } else {
+      this._id = _id;
+    }
   }
 
   save(cb) {
-    CourseManager.fetchAll("618af965dc2fd39e0a018020", (data) => {
-      data.push(this);
-      CourseManager.updateFile("618af965dc2fd39e0a018020", data);
+    CourseManager.fetchAll(this.courseId, (data) => {
+      const lookingQuestion = data.findIndex(
+        (q) => q._id.toString() === this._id.toString()
+      );
+
+      if (lookingQuestion >= 0) {
+        data[lookingQuestion] = this;
+      } else {
+        data.push(this);
+      }
+
+      CourseManager.updateFile(this.courseId, data);
       cb(this);
     });
   }
@@ -57,15 +70,7 @@ class Question {
         }
       }
 
-      console.log(filesToDetach);
-
-      filesToDetach.forEach((file) => {
-        fs.access(path.join(__dirname, "../images", file), (notExists) => {
-          if (!notExists) {
-            fs.unlink(path.join(__dirname, "../images", file), (err) => {});
-          }
-        });
-      });
+      CourseManager.removeImages(filesToDetach);
 
       const newArr = questions.filter(
         (q) => q._id.toString() !== questionId.toString()

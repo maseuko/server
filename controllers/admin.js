@@ -80,7 +80,7 @@ exports.fetchAllQuestions = (req, res, next) => {
 exports.fetchSingleQuestion = (req, res, next) => {
   CourseManager.findOne(
     "618af965dc2fd39e0a018020",
-    "664e562b361b187ae85b050a7dc7c05ccb39b44d734c06beef56b15559a33fe1",
+    "f6f57fd320038e2e5492f629c6620046cb3fbca2cdef20d43c16d56677d99f2f",
     (ques) => {
       try {
         if (!ques) {
@@ -105,5 +105,104 @@ exports.removeQuestion = (req, res, next) => {
       return res.status(404).json({ msg: "Question not exists." });
     }
     res.status(200).json({ msg: "Question removed." });
+  });
+};
+
+exports.modifyQuestion = (req, res, next) => {
+  const filesToDetach = [];
+
+  const question = JSON.parse(req.body.question);
+  const courseId = req.body.courseId;
+  const correctAnswears = JSON.parse(req.body.correctAnswears);
+  const falseAnswears = JSON.parse(req.body.falseAnswears);
+  const questionType = req.body.questionType;
+  const questionId = req.body._id;
+
+  CourseManager.fetchAll(courseId, (data) => {
+    const lookingQuestion = data.filter(
+      (q) => q._id.toString() === questionId.toString()
+    )[0];
+
+    if (
+      (lookingQuestion.question.type === "mixed" ||
+        question.type === "mixed") &&
+      question.type !== "text"
+    ) {
+      if (
+        !lookingQuestion.question.imageName ||
+        lookingQuestion.question.imageName !== question.imageName
+      ) {
+        const file = req.files.filter(
+          (jpg) => jpg.originalname.toString() === question.imageName.toString()
+        )[0];
+        filesToDetach.push(lookingQuestion.question.url.split("/")[2]);
+        question.url = `http://localhost:8080\/images\/${file.filename}`;
+      } else {
+        question.url = lookingQuestion.question.url;
+      }
+    }
+
+    for (let i = 0; i < correctAnswears.length; i++) {
+      const ran = correctAnswears[i];
+      const oran = lookingQuestion.correctAnswears[i];
+      if (
+        (oran.type === "mixed" || ran.type === "mixed") &&
+        ran.type !== "text"
+      ) {
+        if (
+          !oran.imageName ||
+          oran.imageName !== ran.imageName ||
+          i >= lookingQuestion.correctAnswears.length
+        ) {
+          const file = req.files.filter(
+            (jpg) => jpg.originalname.toString() === ran.imageName.toString()
+          )[0];
+          oran.url && filesToDetach.push(oran.url.split("/")[2]);
+          ran.url = `http://localhost:8080\/images\/${file.filename}`;
+        } else {
+          ran.url = oran.url;
+        }
+      }
+      correctAnswears[i] = ran;
+    }
+
+    for (let i = 0; i < falseAnswears.length; i++) {
+      const fan = falseAnswears[i];
+      const ofan = lookingQuestion.falseAnswears[i];
+      if (
+        (ofan.type === "mixed" || fan.type === "mixed") &&
+        fan.type !== "text"
+      ) {
+        if (
+          !ofan.imageName ||
+          ofan.imageName !== fan.imageName ||
+          i >= lookingQuestion.correctAnswears.length
+        ) {
+          const file = req.files.filter(
+            (jpg) => jpg.originalname.toString() === fan.imageName.toString()
+          )[0];
+          ofan.url && filesToDetach.push(ofan.url.split("/")[2]);
+          fan.url = `http://localhost:8080\/images\/${file.filename}`;
+        } else {
+          fan.url = ofan.url;
+        }
+      }
+      falseAnswears[i] = fan;
+    }
+
+    const newUpdatedQuestion = new Question(
+      courseId,
+      question,
+      correctAnswears,
+      falseAnswears,
+      questionType,
+      questionId
+    );
+
+    CourseManager.removeImages(filesToDetach);
+
+    newUpdatedQuestion.save((q) => {
+      res.status(202).json({ msg: "Question updated.", question: q });
+    });
   });
 };
