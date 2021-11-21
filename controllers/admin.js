@@ -1,12 +1,60 @@
 const CourseManager = require("../models/CourseManager");
+const Course = require("../models/courses");
 const Question = require("../models/Question");
+const School = require("../models/School");
 const validationChecker = require("../utils/validation-checker");
 
+exports.addSchool = async (req, res, next) => {
+  const err = new Error();
+  const schoolName = req.body.schoolName;
+
+  try {
+    validationChecker();
+    const result = await School.findOne({ name: schoolName });
+
+    if (result) {
+      err.statusCode = 409;
+      err.msg = "School already exists.";
+      throw err;
+    }
+
+    const school = new School({ name: schoolName });
+    const saveResult = school.save();
+    res.status(201).json({ msg: "School added." });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.removeSchool = async (req, res, next) => {
+  const schoolId = req.body.schoolId;
+  try {
+    School.findByIdAndDelete(schoolId);
+    const courses = await Course.find({ school: schoolId });
+    if (courses.length > 0) {
+      for (let course of courses) {
+        CourseManager.removeCourse(course.school);
+      }
+    }
+    res.status(200).json({ msg: "School removed." });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.createCourse = async (req, res, next) => {
-  const courseName = req.body.name;
+  const name = req.body.name;
+  const schoolId = req.body.schoolId;
   try {
     validationChecker(req);
-    const result = await CourseManager.addCourse(courseName);
+    const schoolResult = await School.findById(schoolId);
+    if (!schoolResult) {
+      const err = new Error();
+      err.statusCode = 404;
+      err.msg = "School not exists.";
+      throw err;
+    }
+    const result = await CourseManager.addCourse({ name, school: schoolId });
     res.status(201).json(result);
   } catch (err) {
     console.log("ok2");
@@ -68,7 +116,7 @@ exports.addQuestion = (req, res, next) => {
     res.status(201).json({ msg: "Question added.", question: obj });
   });
 };
-
+// Do nowego konrolera ------------------------------------------------
 exports.fetchAllQuestions = (req, res, next) => {
   try {
     CourseManager.fetchAll("618af965dc2fd39e0a018020", (ques) => {
@@ -96,7 +144,7 @@ exports.fetchSingleQuestion = (req, res, next) => {
     }
   );
 };
-
+// ---------------------------------------------------------------------
 exports.removeQuestion = (req, res, next) => {
   const courseId = req.body.courseId;
   const questionId = req.body.questionId;
