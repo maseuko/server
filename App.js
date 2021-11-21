@@ -10,6 +10,7 @@ const COURSEDB = require("./constants/database").CURRENT_COURSES;
 const auth = require("./routes/auth");
 const admin = require("./routes/admin");
 const images = require("./routes/images");
+const user = require("./routes/endUser");
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(auth);
 app.use(admin);
 app.use(images);
+app.use(user);
 
 app.use((err, req, res, next) => {
   console.log(err);

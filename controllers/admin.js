@@ -116,35 +116,7 @@ exports.addQuestion = (req, res, next) => {
     res.status(201).json({ msg: "Question added.", question: obj });
   });
 };
-// Do nowego konrolera ------------------------------------------------
-exports.fetchAllQuestions = (req, res, next) => {
-  try {
-    CourseManager.fetchAll("618af965dc2fd39e0a018020", (ques) => {
-      res.status(200).json({ all: ques });
-    });
-  } catch (err) {}
-};
 
-exports.fetchSingleQuestion = (req, res, next) => {
-  CourseManager.findOne(
-    "618af965dc2fd39e0a018020",
-    "f6f57fd320038e2e5492f629c6620046cb3fbca2cdef20d43c16d56677d99f2f",
-    (ques) => {
-      try {
-        if (!ques) {
-          const err = new Error();
-          err.msg = "Question not found.";
-          err.statusCode = 404;
-          throw err;
-        }
-        res.status(200).json(ques);
-      } catch (err) {
-        next(err);
-      }
-    }
-  );
-};
-// ---------------------------------------------------------------------
 exports.removeQuestion = (req, res, next) => {
   const courseId = req.body.courseId;
   const questionId = req.body.questionId;

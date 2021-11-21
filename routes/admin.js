@@ -20,12 +20,12 @@ const upload = multer({ storage: storage });
 const router = express.Router();
 const admin = require("../controllers/admin");
 
+router.post("/add-school", admin.addSchool);
+router.post("/delete-school", admin.removeSchool);
 router.post("/add-course", admin.createCourse); // Head admin
 router.post("/delete-course", admin.deleteCourse); // Head admin
 router.post("/add-question", upload.array("images"), admin.addQuestion); // Head admin + pod admini
 router.post("/remove-question", admin.removeQuestion); // Head admin + pod admini
 router.post("/modify-question", upload.array("images"), admin.modifyQuestion); // Head admin + pod admini
-router.get("/all", admin.fetchAllQuestions); // Do wyjebania
-router.get("/getOne", admin.fetchSingleQuestion); // Do wyjebania
 
 module.exports = router;
