@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
+const { checkSchema } = require("express-validator");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -20,12 +21,74 @@ const upload = multer({ storage: storage });
 const router = express.Router();
 const admin = require("../controllers/admin");
 
-router.post("/add-course", admin.createCourse); // Head admin
-router.post("/delete-course", admin.deleteCourse); // Head admin
-router.post("/add-question", upload.array("images"), admin.addQuestion); // Head admin + pod admini
-router.post("/remove-question", admin.removeQuestion); // Head admin + pod admini
-router.post("/modify-question", upload.array("images"), admin.modifyQuestion); // Head admin + pod admini
-router.get("/all", admin.fetchAllQuestions); // Do wyjebania
+router.post(
+  "/add-course", 
+checkSchema({
+name:{
+  isEmpty: false,
+  errorMessage: "Invalid name of course!",
+  isAlphanumeric: true,
+  isLength: {
+    min: 3,
+  }
+},
+schoolId:{
+  isEmpty:false,
+  errorMessage: "Invalid schoolId !",
+}
+
+}), 
+admin.createCourse); // Head admin
+router.post(
+  "/delete-course",
+  checkSchema({
+    id:{
+      isEmpty: false,
+      errorMessage: "Invalid id!",
+    }
+  }),
+  admin.deleteCourse); // Head admin
+router.post(
+  "/add-question",
+  checkSchema({
+    courseId:{
+      isEmpty: false,
+      errorMessage: "Invalid course id!",
+    }
+    //tutaj jeszcze trzeba zwalidować te zmienne z tablicami ale to ogarne soon
+  }),
+   upload.array("images"), 
+   admin.addQuestion); // Head admin + pod admini
+router.post(
+  "/remove-question",
+checkSchema({
+  courseId:{
+    isEmpty: false,
+    errorMessage: "Invalid course id!",
+  },
+  questionId:{
+    isEmpty: false,
+    errorMessage: "Invalid question id!",
+  }
+  
+}),
+ admin.removeQuestion); // Head admin + pod admini
+router.post(
+  "/modify-question",
+  checkSchema({
+    courseId:{
+      isEmpty: false,
+      errorMessage: "Invalid course id!",
+    },
+    questionId:{
+      isEmpty: false,
+      errorMessage: "Invalid question id!",
+    }
+  })
+  ,
+   upload.array("images"),
+    admin.modifyQuestion); // Head admin + pod admini
+router.get( "/all", admin.fetchAllQuestions); // Do wyjebania
 router.get("/getOne", admin.fetchSingleQuestion); // Do wyjebania
 
 module.exports = router;
