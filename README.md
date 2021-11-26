@@ -65,18 +65,18 @@ W przypadku zalogowania zwrocony zostanie obiekt w ktorym bedzie pole UID(ID use
 
 Potwierdzenie że użytkownik podał prawdziwy adres mailowy.
 
-<br><br>
+<br>
 
 **W adresie w polach powinny znajdować się**
 
-<br><br>
+<br>
 
 | Nazwa | Zawartość |
 | ----- | --------- |
 | uid | Adres użytkownika |
 | token | Automatycznie wygenerowany token |
 
-<br><br>
+<br>
 
 **Zwraca statusy:**<br>
 
@@ -91,7 +91,7 @@ Potwierdzenie że użytkownik podał prawdziwy adres mailowy.
 >Odzyskiwanie hasła<br>
 >/authorize/get-reset
 
-<br><br>
+<br>
 
 **Przyjmuje obiekt o strukturze:**<br><br>
 
@@ -99,9 +99,9 @@ Potwierdzenie że użytkownik podał prawdziwy adres mailowy.
 | ----- | --------- |
 | email | Email użytkownika którym się rejestrował |
 
-<br><br>
+<br>
 
-**Zwraca statusy:**<br><br>
+**Zwraca statusy:**<br>
 
 | Numer | Co oznacza |
 | ----- | ---------- |
