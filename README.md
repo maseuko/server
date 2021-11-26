@@ -156,3 +156,5 @@ Ten endpoint służy do sprawdzenia czy token z maila jest poprawny, oraz czy ni
 | 202 | Hasło zmienione |
 | 400 | Niepoprawny token lub token wygasł |
 | 404 | Podany użytkownik nie istnieje |
+
+### Administracja
