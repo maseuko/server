@@ -121,3 +121,15 @@ Ten endpoint służy do sprawdzenia czy token z maila jest poprawny, oraz czy ni
 | ----- | --------- |
 | _id | Id użytkownika z linku |
 | token | Token z linku |
+
+<br>
+
+**Zwraca statusy:**<br>
+
+| Numer | Co oznacza |
+| ----- | ---------- |
+| 200 | Token jest poprawny |
+| 404 | Nie znaleziono użytkownika z podanym id |
+| 400 | Niepoprawny token lub token wygasł |
+
+
