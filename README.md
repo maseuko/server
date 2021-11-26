@@ -7,7 +7,8 @@ Zero spaghetti kodu ok
   /register<br>
 <br>
 Przyjmuje obiekt o strukturze:<br>
-```{
+```
+const x = {
   username: username,<br>
   email: email, <br>
   password: password<br>
