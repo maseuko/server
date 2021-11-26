@@ -58,10 +58,10 @@ W przypadku zalogowania zwrocony zostanie obiekt w ktorym bedzie pole UID(ID use
 **W przeciwnym wyppadku serwer zwroci nieautoryzowanego uzytkownika(status 401)**
 <br><br>
 
->Autoryzacja konta
+>Autoryzacja konta<br>
 >/authorize/:uid/:token
 
-<br><br>
+<br>
 
 Potwierdzenie że użytkownik podał prawdziwy adres mailowy.
 
@@ -88,7 +88,7 @@ Potwierdzenie że użytkownik podał prawdziwy adres mailowy.
 
 <br><br>
 
->Odzyskiwanie hasła
+>Odzyskiwanie hasła<br>
 >/authorize/get-reset
 
 <br><br>
