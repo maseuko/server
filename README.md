@@ -5,7 +5,7 @@ Zero spaghetti kodu ok
 
 > **Rejestracja:**<br>
   /register<br>
-<br>
+
 **Przyjmuje obiekt o strukturze:**<br><br>
 
 | Nazwa | Zawartość |
