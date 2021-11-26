@@ -30,24 +30,29 @@ Zero spaghetti kodu ok
 > Logowanie:<br>
   /login
 
-Przyjmuje obiekt o strukturze:<br>
-{<br>
-  email: email,<br>
-  password: password,<br>
-  rememberMe: rememberMe(bool)<br>
-}<br>
+**Przyjmuje obiekt o strukturze:**<br>
 
-Zwraca statusy:<br>
+| Nazwa pola | Zawartość |
+| ----- | --------- |
+| email | Email jakim użytkownik będzie się logował |
+| password | Hasło użytkownika |
+| rememberMe | Czy użytkownik chce być zapamiętany(true/false) |
 
-200 - Zalogowano<br>
-400 - Hasla sa rozne<br>
-404 - Nie znaleziono uzytkownika z podanym adresem mailowym<br>
-Inne(Prawdopodobnie 500+) - Cos sie odjebalo chuj wie co<br>
+
+**Zwraca statusy:**<br>
+
+| Numer | Co oznacza |
+| ----- | ---------- |
+| 200 | Zalogowano |
+| 400 | Hasla sa różne |
+| 404 | Nie znaleziono uzytkownika z podanym adresem mailowym |
 
 W przypadku zalogowania zwrocony zostanie obiekt w ktorym bedzie pole UID(ID usera z bazy), token(Obiekt w ktorym bedzie pole token(wygenerowany token), expire(data wygasniecia)), oraz w przypadku klikniecia zapamietaj mnie(opcjonalne) kolejny token wygasajacy po 30 dniach. Te dane nalezy zapisac na froncie + do kazdego autoryzowanego zapytania ustawic headery:<br>
 
-token: ten wygasajacy co 1h,<br>
-uid: ID uzytkownika,<br>
-rememberToken(opcjonalny): ten wygasajacy po 30 dniach<br>
+| Nazwa | Zawartość |
+| ----- | --------- |
+| token | Ten wygasajacy co 1h |
+| uid | ID uzytkownika |
+| rememberToken | Token wygasający po 30 dniach(opcjonalny) |
 
-W przeciwnym wyppadku serwer zwroci nieautoryzowanego uzytkownika(status 401)
+**W przeciwnym wyppadku serwer zwroci nieautoryzowanego uzytkownika(status 401)**
