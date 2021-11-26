@@ -128,7 +128,9 @@ exports.authorizeAccount = async (req, res, next) => {
 
   try {
     validationChecker(req);
+
     const user = await User.findById(uid);
+
     if (!user) {
       error.statusCode = 404;
       error.msg = "User not found.";
@@ -159,6 +161,7 @@ exports.getReset = (req, res, next) => {
     const token = buffer.toString("hex");
 
     try {
+      console.log(req.body);
       validationChecker(req);
 
       const user = await User.findOne({ email: req.body.email });
@@ -195,7 +198,7 @@ exports.checkResetToken = async (req, res, next) => {
 
   try {
     validationChecker(req);
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findById(req.body._id);
     if (!user) {
       error.statusCode = 404;
       error.msg = "There is no such a user.";

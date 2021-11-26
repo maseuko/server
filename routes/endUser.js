@@ -1,10 +1,12 @@
 const express = require("express");
 const endUserController = require("../controllers/endUser");
+const { checkSchema } = require("express-validator");
 
 const router = express.Router();
 
-router.post("/get-all",
-checkSchema({
+router.post(
+  "/get-all",
+  checkSchema({
     courseId: {
       isEmpty: false,
       errorMessage: "Invalid course id!",
@@ -15,10 +17,11 @@ checkSchema({
     },
   }),
 
-endUserController.fetchAllQuestions);
+  endUserController.fetchAllQuestions
+);
 router.post(
-    "/get-one",
-checkSchema({
+  "/get-one",
+  checkSchema({
     courseId: {
       isEmpty: false,
       errorMessage: "Invalid course id!",
@@ -27,6 +30,8 @@ checkSchema({
       isEmpty: false,
       errorMessage: "Invalid question id!",
     },
-  }), endUserController.fetchSingleQuestion);
+  }),
+  endUserController.fetchSingleQuestion
+);
 
 module.exports = router;

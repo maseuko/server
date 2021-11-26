@@ -69,10 +69,9 @@ router.post(
 router.post(
   "/authorize/check-token",
   checkSchema({
-    email: {
-      isEmail: true,
+    _id: {
       isEmpty: false,
-      errorMessage: "Invalid email address.",
+      errorMessage: "Invalid id.",
     },
     token: {
       isEmpty: false,
