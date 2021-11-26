@@ -25,7 +25,7 @@ Zero spaghetti kodu ok
 | 403 | Email juz istnieje |
 | 409 | Chuj wie co sie odjebalo w mongodb ale nie udalo sie utworzyc usera |
 
-
+<br><br>
 
 > Logowanie:<br>
   /login
@@ -56,3 +56,4 @@ W przypadku zalogowania zwrocony zostanie obiekt w ktorym bedzie pole UID(ID use
 | rememberToken | Token wygasający po 30 dniach(opcjonalny) |
 
 **W przeciwnym wyppadku serwer zwroci nieautoryzowanego uzytkownika(status 401)**
+<br><br>
