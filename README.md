@@ -7,13 +7,13 @@ Zero spaghetti kodu ok
   /register<br>
 <br>
 Przyjmuje obiekt o strukturze:<br>
-```
-const x = {
+
+{<br>
   username: username,<br>
   email: email, <br>
   password: password<br>
-}
-```
+}<br>
+
 Zwraca statusy:<br><br>
 
 201 - Utworzono nowego uzytkownika<br>
