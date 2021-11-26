@@ -1,7 +1,7 @@
 # server
 Zero spaghetti kodu ok
 
-#Endopinty:<br>
+# Endopinty:<br>
 
 Rejestracja:<br>
   /register<br>
