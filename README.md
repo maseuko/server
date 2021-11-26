@@ -8,6 +8,11 @@ Zero spaghetti kodu ok
 <br>
 Przyjmuje obiekt o strukturze:<br>
 
+| Nazwa | Zawartość |
+| ----- | --------- |
+| username | Nazwa użytkownika(znaki alfanumeryczne) |
+| email | Email jakim użytkownik będzie się logował |
+
 {<br>
   username: username,<br>
   email: email, <br>
