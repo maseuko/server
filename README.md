@@ -7,8 +7,7 @@ Zero spaghetti kodu ok
   /register<br>
 <br>
 Przyjmuje obiekt o strukturze:<br>
-``ajsd``
-``
+
 {
   username: username,<br>
   email: email, <br>
