@@ -132,4 +132,27 @@ Ten endpoint służy do sprawdzenia czy token z maila jest poprawny, oraz czy ni
 | 404 | Nie znaleziono użytkownika z podanym id |
 | 400 | Niepoprawny token lub token wygasł |
 
+<br>
 
+>Zmiana hasła <br>
+>/authorize/new-password
+
+<br>
+
+**Przyjmuje obiekt o strukturze:**<br>
+
+| Nazwa pola | Zawartość |
+| ----- | --------- |
+| uid | Id użytkownika z linku |
+| password | Nowe hasło użytkownika |
+| passwordToken | Token z linku |
+
+<br>
+
+**Zwraca statusy:**<br>
+
+| Numer | Co oznacza |
+| ----- | ---------- |
+| 202 | Hasło zmienione |
+| 400 | Niepoprawny token lub token wygasł |
+| 404 | Podany użytkownik nie istnieje |
