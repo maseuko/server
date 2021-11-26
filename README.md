@@ -110,3 +110,14 @@ Potwierdzenie że użytkownik podał prawdziwy adres mailowy.
 
 <br><br>
 
+>Sprawdzenie tokena do resetu hasła<br>
+>/authorize/check-token
+
+Ten endpoint służy do sprawdzenia czy token z maila jest poprawny, oraz czy nie wygasł, na podstawie informacji zwrotnej powinniście zadecydować czy wyświetlić użytkownikowi formularz zmiany hasła.<br>
+
+**Przyjmuje obiekt o strukturze:**<br>
+
+| Nazwa pola | Zawartość |
+| ----- | --------- |
+| _id | Id użytkownika z linku |
+| token | Token z linku |
