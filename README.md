@@ -3,7 +3,7 @@ Zero spaghetti kodu ok
 
 # Endopinty:<br>
 
-## Autoryzacja
+### Autoryzacja
 
 > **Rejestracja:**<br>
   /register<br>
