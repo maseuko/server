@@ -8,7 +8,7 @@ Zero spaghetti kodu ok
 
 **Przyjmuje obiekt o strukturze:**<br><br>
 
-| Nazwa | Zawartość |
+| Nazwa pola | Zawartość |
 | ----- | --------- |
 | username | Nazwa użytkownika(znaki alfanumeryczne) |
 | email | Email jakim użytkownik będzie się logował |
