@@ -3,7 +3,7 @@ Zero spaghetti kodu ok
 
 # Endopinty:<br>
 
-### **Rejestracja:**<br>
+> **Rejestracja:**<br>
   /register<br>
 <br>
 Przyjmuje obiekt o strukturze:<br>
