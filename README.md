@@ -57,3 +57,56 @@ W przypadku zalogowania zwrocony zostanie obiekt w ktorym bedzie pole UID(ID use
 
 **W przeciwnym wyppadku serwer zwroci nieautoryzowanego uzytkownika(status 401)**
 <br><br>
+
+>Autoryzacja konta
+>/authorize/:uid/:token
+
+<br><br>
+
+Potwierdzenie że użytkownik podał prawdziwy adres mailowy.
+
+<br><br>
+
+**W adresie w polach powinny znajdować się**
+
+<br><br>
+
+| Nazwa | Zawartość |
+| ----- | --------- |
+| uid | Adres użytkownika |
+| token | Automatycznie wygenerowany token |
+
+<br><br>
+
+**Zwraca statusy:**<br>
+
+| Numer | Co oznacza |
+| ----- | ---------- |
+| 200 | Konto zostało zweryfikowane |
+| 403 | Użytkownik jest już zweryfikowany lub tokeny się nie zgadzają |
+| 404 | Nie znaleziono takiego użytkownika |
+
+<br><br>
+
+>Odzyskiwanie hasła
+>/authorize/get-reset
+
+<br><br>
+
+**Przyjmuje obiekt o strukturze:**<br><br>
+
+| Nazwa pola | Zawartość |
+| ----- | --------- |
+| email | Email użytkownika którym się rejestrował |
+
+<br><br>
+
+**Zwraca statusy:**<br><br>
+
+| Numer | Co oznacza |
+| ----- | ---------- |
+| 200 | Wysłano email z tokenem |
+| 404 | Nie znaleziono użytkownika z podanym adresem mailowym |
+
+<br><br>
+
