@@ -8,11 +8,11 @@ Zero spaghetti kodu ok
 <br>
 Przyjmuje obiekt o strukturze:<br>
 ```
-{<br>
+{
   username: username,<br>
   email: email, <br>
   password: password<br>
-}<br>
+}
 ```
 Zwraca statusy:<br><br>
 
