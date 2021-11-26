@@ -6,25 +6,23 @@ Zero spaghetti kodu ok
 > **Rejestracja:**<br>
   /register<br>
 <br>
-Przyjmuje obiekt o strukturze:<br>
+**Przyjmuje obiekt o strukturze:**<br><br>
 
 | Nazwa | Zawartość |
 | ----- | --------- |
 | username | Nazwa użytkownika(znaki alfanumeryczne) |
 | email | Email jakim użytkownik będzie się logował |
-
-{<br>
-  username: username,<br>
-  email: email, <br>
-  password: password<br>
-}<br>
+| password | Hasło użytkownika |
 
 **Zwraca statusy:**<br><br>
 
-201 - Utworzono nowego uzytkownika<br>
-400 - Niepopprawne dane wyslane z frontendu<br>
-403 - Email juz istnieje<br>
-409 - Chuj wie co sie odjebalo w mongodb ale nie udalo sie utworzyc usera<br>
+| Numer | Co oznacza |
+| ----- | ---------- |
+| 201 | Utworzono nowego uzytkownika |
+| 400 | Niepoprawne dane wysłane z frontendu |
+| 403 | Email juz istnieje |
+| 409 | Chuj wie co sie odjebalo w mongodb ale nie udalo sie utworzyc usera |
+
 
 
 > Logowanie:<br>
