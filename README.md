@@ -14,7 +14,7 @@ Przyjmuje obiekt o strukturze:<br>
   password: password<br>
 }<br>
 
-Zwraca statusy:<br><br>
+**Zwraca statusy:**<br><br>
 
 201 - Utworzono nowego uzytkownika<br>
 400 - Niepopprawne dane wyslane z frontendu<br>
