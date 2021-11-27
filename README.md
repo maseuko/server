@@ -252,3 +252,43 @@ Ten endpoint służy do sprawdzenia czy token z maila jest poprawny, oraz czy ni
 | 200 | Kurs został usunięty wraz z pytaniami |
 | 404 | Nie znaleziono podanego kursu |
 | 409 | Nie udało się usunąć pliku |
+
+<br>
+
+#### Head admin + pod admini
+
+>Dodawanie pytania
+>/add-question
+
+**Przyjmuje dane w formacie FormData(klasa w JS'ie)**<br>
+
+| Nazwa pola | Zawartość |
+| ----- | --------- |
+| question | String JSON'owy |
+| courseId | Id kursu do którego chcecie dodać pytanie |
+| correctAnswears | Tablica z obiektami(Też w formacie JSON'owym) |
+| falseAnswears | Tablica z obiektami(Też w formacie JSON'owym) |
+| questionType | Typ pytania(mixed/text) |
+| images | Tablica z zdjęciami(opcjonalne) |
+
+<br>
+
+**Struktury obiektów w polu question, oraz w tablicach correctAnswears i falseAnswears**<br>
+
+| Nazwa pola | Zawartość |
+| ----- | --------- |
+| type | mixed/text |
+| value | Tekst naszego pytania |
+| imageName | Pełna nazwa obrazka(wymagane jeżeli typ jest mixed) |
+
+<br>
+
+W odpowiedzi dostaniecie pełny utworzony obiekt z pytaniem.
+
+<br>
+
+>Usuwanie pytania<br>
+>/remove-question
+
+<br>
+
