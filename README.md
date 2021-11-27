@@ -316,3 +316,13 @@ W odpowiedzi dostaniecie pełny utworzony obiekt z pytaniem.
 | ----- | ---------- |
 | 200 | Pytanie zostało usunięte |
 | 404 | Nie znaleziono pytania/kursu |
+
+>Modyfikacja pytania<br>
+>/modify-question
+
+<br>
+
+Identycznie jak w dodawaniu pytania tylko z zmienionymi danymi.
+
+<br>
+
