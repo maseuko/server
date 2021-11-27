@@ -20,20 +20,24 @@ class Question {
   }
 
   save(cb) {
-    CourseManager.fetchAll(this.courseId, (data) => {
-      const lookingQuestion = data.findIndex(
-        (q) => q._id.toString() === this._id.toString()
-      );
+    try {
+      CourseManager.fetchAll(this.courseId, (data) => {
+        const lookingQuestion = data.findIndex(
+          (q) => q._id.toString() === this._id.toString()
+        );
 
-      if (lookingQuestion >= 0) {
-        data[lookingQuestion] = this;
-      } else {
-        data.push(this);
-      }
+        if (lookingQuestion >= 0) {
+          data[lookingQuestion] = this;
+        } else {
+          data.push(this);
+        }
 
-      CourseManager.updateFile(this.courseId, data);
-      cb(this);
-    });
+        CourseManager.updateFile(this.courseId, data);
+        cb(this, null);
+      });
+    } catch (err) {
+      cb(null, err);
+    }
   }
 
   static removeQuestion(courseId, questionId, cb) {

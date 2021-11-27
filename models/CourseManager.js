@@ -95,6 +95,12 @@ class CourseManager {
       (course) => course._id.toString() === id.toString()
     );
     course = course[0];
+    if (!course) {
+      const err = new Error();
+      err.statusCode = 404;
+      err.msg = "Course not exists";
+      throw err;
+    }
     fs.readFile(course.path, (err, data) => {
       if (data) {
         cb(JSON.parse(data));

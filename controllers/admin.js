@@ -33,7 +33,7 @@ exports.removeSchool = async (req, res, next) => {
     const courses = await Course.find({ school: schoolId });
     if (courses.length > 0) {
       for (let course of courses) {
-        CourseManager.removeCourse(course.school);
+        CourseManager.removeCourse(course._id.toString());
       }
     }
     res.status(200).json({ msg: "School removed." });
@@ -57,7 +57,6 @@ exports.createCourse = async (req, res, next) => {
     const result = await CourseManager.addCourse({ name, school: schoolId });
     res.status(201).json(result);
   } catch (err) {
-    console.log("ok2");
     next(err);
   }
 };
@@ -112,7 +111,10 @@ exports.addQuestion = (req, res, next) => {
     questionType
   );
 
-  pytanie.save((obj) => {
+  pytanie.save((obj, err) => {
+    if (err) {
+      return res.status(err.statusCode).json({ msg: err.msg });
+    }
     res.status(201).json({ msg: "Question added.", question: obj });
   });
 };
@@ -221,7 +223,10 @@ exports.modifyQuestion = (req, res, next) => {
 
     CourseManager.removeImages(filesToDetach);
 
-    newUpdatedQuestion.save((q) => {
+    newUpdatedQuestion.save((q, err) => {
+      if (err) {
+        return res.status(err.statusCode).json({ msg: err.msg });
+      }
       res.status(202).json({ msg: "Question updated.", question: q });
     });
   });

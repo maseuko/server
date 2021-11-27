@@ -21,6 +21,9 @@ const upload = multer({ storage: storage });
 const router = express.Router();
 const admin = require("../controllers/admin");
 
+router.post("/add-school", admin.addSchool);
+router.post("/remove-school", admin.removeSchool);
+
 router.post(
   "/add-course",
   checkSchema({
