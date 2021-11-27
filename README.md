@@ -257,7 +257,7 @@ Ten endpoint służy do sprawdzenia czy token z maila jest poprawny, oraz czy ni
 
 #### Head admin + pod admini
 
->Dodawanie pytania
+>Dodawanie pytania<br>
 >/add-question
 
 **Przyjmuje dane w formacie FormData(klasa w JS'ie)**<br>
@@ -283,6 +283,15 @@ Ten endpoint służy do sprawdzenia czy token z maila jest poprawny, oraz czy ni
 
 <br>
 
+**Zwraca statusy:**<br>
+
+| Numer | Co oznacza |
+| ----- | ---------- |
+| 201 | Pytanie zostało dodane |
+| 404 | Nie znaleziono kursu |
+
+<br>
+
 W odpowiedzi dostaniecie pełny utworzony obiekt z pytaniem.
 
 <br>
@@ -292,3 +301,18 @@ W odpowiedzi dostaniecie pełny utworzony obiekt z pytaniem.
 
 <br>
 
+**Przyjmuje obiekt o strukturze:**<br>
+
+| Nazwa pola | Zawartość |
+| ----- | --------- |
+| courseId | Id kursu do którego należy pytanie |
+| questionId | Id pytania do usunięcia |
+
+<br>
+
+**Zwraca statusy:**<br>
+
+| Numer | Co oznacza |
+| ----- | ---------- |
+| 200 | Pytanie zostało usunięte |
+| 404 | Nie znaleziono pytania/kursu |
