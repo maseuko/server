@@ -317,6 +317,8 @@ W odpowiedzi dostaniecie pełny utworzony obiekt z pytaniem.
 | 200 | Pytanie zostało usunięte |
 | 404 | Nie znaleziono pytania/kursu |
 
+<br>
+
 >Modyfikacja pytania<br>
 >/modify-question
 
