@@ -204,3 +204,51 @@ Ten endpoint służy do sprawdzenia czy token z maila jest poprawny, oraz czy ni
 | ----- | ---------- |
 | 200 | Uczelnia usunięta, wraz z wszystkimi kursami |
 | 409 | Nie udało się usunąć wszystkich plików związanych z uczelnią |
+
+<br>
+
+>Dodawanie kursu do uczelni<br>
+>/add-course
+
+<br>
+
+
+**Przyjmuje obiekt o strukturze:**<br>
+
+| Nazwa pola | Zawartość |
+| ----- | --------- |
+| name | Nazwa kursu |
+| schoolId | Id uczelni |
+
+<br>
+
+**Zwraca statusy:**<br>
+
+| Numer | Co oznacza |
+| ----- | ---------- |
+| 201 | Dodano kurs |
+| 404 | Nie znaleziono uczelni |
+| 409 | Kurs z podaną nazwą już istnieje |
+
+<br>
+
+>Usuwanie kursu<br>
+>/delete-course
+
+<br>
+
+**Przyjmuje obiekt o strukturze:**<br>
+
+| Nazwa pola | Zawartość |
+| ----- | --------- |
+| id | Id kursu do usunięcia |
+
+<br>
+
+**Zwraca statusy:**<br>
+
+| Numer | Co oznacza |
+| ----- | ---------- |
+| 200 | Kurs został usunięty wraz z pytaniami |
+| 404 | Nie znaleziono podanego kursu |
+| 409 | Nie udało się usunąć pliku |
