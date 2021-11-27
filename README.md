@@ -158,3 +158,49 @@ Ten endpoint służy do sprawdzenia czy token z maila jest poprawny, oraz czy ni
 | 404 | Podany użytkownik nie istnieje |
 
 ### Administracja
+
+#### Tylko head admin
+
+<br>
+
+>Dodawanie uczelni<br>
+>/add-school
+
+<br>
+
+**Przyjmuje obiekt o strukturze:**<br>
+
+| Nazwa pola | Zawartość |
+| ----- | --------- |
+| schoolName | Nazwa uczelni |
+
+<br>
+
+**Zwraca statusy:**<br>
+
+| Numer | Co oznacza |
+| ----- | ---------- |
+| 201 | Dodano uczelnie |
+| 409 | Uczelnia już istnieje |
+
+<br>
+
+>Usuwanie uczelni<br>
+>/remove-school
+
+<br>
+
+**Przyjmuje obiekt o strukturze:**<br>
+
+| Nazwa pola | Zawartość |
+| ----- | --------- |
+| schoolId | Id uczelni |
+
+<br>
+
+**Zwraca statusy:**<br>
+
+| Numer | Co oznacza |
+| ----- | ---------- |
+| 200 | Uczelnia usunięta, wraz z wszystkimi kursami |
+| 409 | Nie udało się usunąć wszystkich plików związanych z uczelnią |
