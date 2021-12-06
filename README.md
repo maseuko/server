@@ -328,3 +328,28 @@ Identycznie jak w dodawaniu pytania tylko z zmienionymi danymi.
 
 <br>
 
+### Wartości ogólne
+
+<br>
+
+>Pozyskanie wszystkich uczelni
+><br>/get-all-schools metoda GET
+
+<br>
+
+Zwraca wszystkie dostępne uczelnie
+
+<br>
+
+>Pozyskanie wszystkich kursów dla danej uczelni
+><br> /get-all-courses metoda POST
+
+<br>
+
+| Nazwa pola | Zawartość |
+| ----- | --------- |
+| schoolId | Id uczelni |
+
+<br>
+
+Zwraca tablice z wszystkimi dostępnymi dla danej uczelni kursami.
