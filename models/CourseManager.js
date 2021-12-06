@@ -39,6 +39,7 @@ class CourseManager {
               name: courseData.name,
               path: filePath,
               school: courseData.school,
+              price: courseData.price,
             });
             const result = await newCourse.save();
             COURSEDB[0].push(result);

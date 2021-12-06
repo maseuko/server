@@ -2,6 +2,7 @@ const School = require("../models/School");
 const Course = require("../models/courses");
 const CourseManager = require("../models/CourseManager");
 const validationChecker = require("../utils/validation-checker");
+const User = require("../models/user");
 
 exports.addSchool = async (req, res, next) => {
   const err = new Error();
@@ -43,6 +44,7 @@ exports.removeSchool = async (req, res, next) => {
 
 exports.createCourse = async (req, res, next) => {
   const name = req.body.name;
+  const price = req.body.price;
   const schoolId = req.body.schoolId;
   try {
     validationChecker(req);
@@ -53,7 +55,11 @@ exports.createCourse = async (req, res, next) => {
       err.msg = "School not exists.";
       throw err;
     }
-    const result = await CourseManager.addCourse({ name, school: schoolId });
+    const result = await CourseManager.addCourse({
+      name,
+      school: schoolId,
+      price,
+    });
     res.status(201).json(result);
   } catch (err) {
     next(err);
@@ -66,6 +72,34 @@ exports.deleteCourse = async (req, res, next) => {
     validationChecker(req);
     const result = await CourseManager.removeCourse(id);
     res.status(200).json({ msg: "Course removed." });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.grantAccess = async (req, res, next) => {
+  const uid = req.body.uid;
+  const courseId = req.body.courseId;
+  const modify = req.body.modify;
+
+  try {
+    const user = await User.findById(uid);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found." });
+    }
+    const index = user.permissions.findIndex(
+      (p) => p.courseId.toString() === courseId.toString()
+    );
+    if (!(index >= 0)) {
+      user.permissions.push({ courseId, modify });
+      await user.save();
+      return res.status(202).json({ msg: "Access granted." });
+    }
+
+    user.permissions[index].modify = modify;
+
+    await user.save();
+    return res.status(202).json({ msg: "Access updated." });
   } catch (err) {
     next(err);
   }

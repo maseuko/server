@@ -15,6 +15,10 @@ const courseSchema = new Schema(
       required: true,
       type: String,
     },
+    price: {
+      type: Schema.Types.Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
