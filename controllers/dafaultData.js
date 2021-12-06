@@ -10,5 +10,14 @@ exports.getAllCourses = (req, res, next) => {
   const courses = COURSES[0].filter(
     (c) => c.school.toString() === schoolId.toString()
   );
-  res.status(200).json(courses);
+
+  const final = courses.map((element) => {
+    return {
+      _id: element._id,
+      name: element.name,
+      school: element.school,
+    };
+  });
+
+  res.status(200).json(final);
 };
