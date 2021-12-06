@@ -329,7 +329,9 @@ Identycznie jak w dodawaniu pytania tylko z zmienionymi danymi.
 <br>
 
 ### Wartości ogólne
+
 <br>
+
 >Pozyskanie wszystkich uczelni
 ><br>/get-all-schools metoda GET
 
