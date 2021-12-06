@@ -41,7 +41,7 @@ class CourseManager {
               school: courseData.school,
             });
             const result = await newCourse.save();
-            COURSEDB.push(result);
+            COURSEDB[0].push(result);
             return {
               msg: "Course added.",
               course: {
@@ -77,6 +77,10 @@ class CourseManager {
               }
             });
             const deletedCourse = await Course.findByIdAndDelete(id);
+            const updatedDB = COURSEDB[0].filter(
+              (c) => c._id.toString() !== id.toString()
+            );
+            COURSEDB[0] = updatedDB;
             return {
               msg: "Course deleted succesfully.",
             };
