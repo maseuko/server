@@ -71,7 +71,6 @@ exports.login = async (req, res, next) => {
     validationChecker(req);
 
     const user = await User.findOne({ email: email });
-    console.log(user);
     if (!user) {
       return res
         .status(404)

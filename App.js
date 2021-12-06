@@ -3,14 +3,19 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
+const User = require("./models/user");
+const isHeadAdmin = require("./middlewares/is-head-admin");
+const isAuth = require("./middlewares/is-auth");
 
 const Course = require("./models/courses");
 const COURSEDB = require("./constants/database").CURRENT_COURSES;
+const USERDB = require("./constants/database").USERS;
 
 const auth = require("./routes/auth");
 const admin = require("./routes/admin");
 const images = require("./routes/images");
 const user = require("./routes/endUser");
+const headAdmin = require("./routes/headAdmin");
 
 const app = express();
 
@@ -33,9 +38,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(auth);
-app.use(admin);
+app.use([isAuth], admin);
 app.use(images);
-app.use(user);
+app.use([isAuth], user);
+app.use([isAuth, isHeadAdmin], headAdmin);
 
 app.use((err, req, res, next) => {
   console.log(err);
@@ -55,6 +61,13 @@ mongoose
         throw err;
       }
       COURSEDB.push(course);
+    });
+
+    User.find({}, (err, user) => {
+      if (err) {
+        throw err;
+      }
+      USERDB.push(user);
       app.listen(8080);
     });
   })
