@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
-const { checkSchema } = require("express-validator");
+const { checkSchema,body } = require("express-validator");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -28,8 +28,13 @@ router.post(
       isEmpty: false,
       errorMessage: "Invalid course id!",
     },
-    //tutaj jeszcze trzeba zwalidować te zmienne z tablicami ale to ogarne soon
+     //tutaj jeszcze trzeba zwalidować te zmienne z tablicami ale to ogarne soon
   }),
+  body('qestion','Insert correct qestion!').isEmpty(false),
+  body('correctAnswears','Insert correct answear!').isEmpty(false), 
+  body('falseAnswears','Insert false answear!').isEmpty(false),
+  body('type','Type type :)').isEmpty(false).isAlphanumeric(),
+  
   upload.array("images"),
   admin.addQuestion
 ); // Head admin + pod admini
@@ -59,6 +64,10 @@ router.post(
       errorMessage: "Invalid question id!",
     },
   }),
+  body('qestion','Insert correct qestion!').isEmpty(false),
+  body('correctAnswears','Insert correct answear!').isEmpty(false), 
+  body('falseAnswears','Insert false answear!').isEmpty(false),
+  body('type','Type type :)').isEmpty(false).isAlphanumeric(),
   upload.array("images"),
   admin.modifyQuestion
 ); // Head admin + pod admini
