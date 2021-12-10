@@ -4,6 +4,7 @@ const Question = require("../models/Question");
 const validationChecker = require("../utils/validation-checker");
 
 exports.addQuestion = (req, res, next) => {
+  console.log(req.body.question);
   const question = JSON.parse(req.body.question);
   const courseId = req.body.courseId;
   const correctAnswears = JSON.parse(req.body.correctAnswears);
@@ -11,9 +12,11 @@ exports.addQuestion = (req, res, next) => {
   const questionType = req.body.questionType;
 
   if (question.type === "mixed") {
+    console.log(req.files);
     const file = req.files.filter(
       (jpg) => jpg.originalname === question.imageName
     );
+    console.log(file);
     question.url = `localhost:8080\/images\/${file[0].filename}`;
   }
 
