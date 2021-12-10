@@ -2,6 +2,7 @@ const CourseManager = require("../models/CourseManager");
 const Course = require("../models/courses");
 const Question = require("../models/Question");
 const validationChecker = require("../utils/validation-checker");
+const USERSDB = require("../constants/database").USERS;
 
 exports.addQuestion = (req, res, next) => {
   const question = JSON.parse(req.body.question);
@@ -9,6 +10,10 @@ exports.addQuestion = (req, res, next) => {
   const correctAnswears = JSON.parse(req.body.correctAnswears);
   const falseAnswears = JSON.parse(req.body.falseAnswears);
   const questionType = req.body.questionType;
+  const authorId = req.get("uid");
+  const author = USERSDB[0].find(
+    (a) => a._id.toString() === authorId.toString()
+  );
 
   if (question.type === "mixed") {
     const file = req.files.filter(
@@ -39,7 +44,8 @@ exports.addQuestion = (req, res, next) => {
     question,
     correctAnswears,
     falseAnswears,
-    questionType
+    questionType,
+    author.username
   );
 
   pytanie.save((obj, err) => {
@@ -70,6 +76,10 @@ exports.modifyQuestion = (req, res, next) => {
   const falseAnswears = JSON.parse(req.body.falseAnswears);
   const questionType = req.body.questionType;
   const questionId = req.body._id;
+  const authorId = req.get("uid");
+  const author = USERSDB[0].find(
+    (a) => a._id.toString() === authorId.toString()
+  );
 
   CourseManager.fetchAll(courseId, (data) => {
     const lookingQuestion = data.filter(
@@ -149,6 +159,7 @@ exports.modifyQuestion = (req, res, next) => {
       correctAnswears,
       falseAnswears,
       questionType,
+      author.username,
       questionId
     );
 
