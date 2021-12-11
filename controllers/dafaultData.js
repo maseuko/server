@@ -21,3 +21,18 @@ exports.getAllCourses = (req, res, next) => {
 
   res.status(200).json(final);
 };
+
+exports.getAllCoursesWithoutSchool = (req, res, next) => {
+  const final = COURSES[0].map((element) => {
+    const fschool = SCHOOLS[0].filter(
+      (e) => element.school.toString() === e._id.toString()
+    );
+    return {
+      _id: element._id,
+      name: element.name,
+      school: fschool.map((s) => ({ name: s.name, _id: s._id }))[0],
+      price: element.price,
+    };
+  });
+  return res.status(200).json(final);
+};
