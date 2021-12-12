@@ -2,7 +2,8 @@ const SCHOOLS = require("../constants/database").SCHOOLS;
 const COURSES = require("../constants/database").CURRENT_COURSES;
 
 exports.getAllSchools = (req, res, next) => {
-  return res.status(200).json(SCHOOLS[0]);
+  const final = SCHOOLS[0].map((c) => ({ _id: c._id, name: c.name }));
+  return res.status(200).json(final);
 };
 
 exports.getAllCourses = (req, res, next) => {
