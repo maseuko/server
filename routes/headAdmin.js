@@ -13,7 +13,6 @@ router.post(
     name: {
       isEmpty: false,
       errorMessage: "Invalid name of course!",
-      isAlphanumeric: true,
       isLength: {
         min: 3,
       },
