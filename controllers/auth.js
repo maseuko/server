@@ -258,7 +258,7 @@ exports.postNewPassword = async (req, res, next) => {
       throw error;
     }
 
-    const newHashedPassword = await bcrypt.hash(newPassword, 20);
+    const newHashedPassword = await bcrypt.hash(newPassword, 12);
     user.password = newHashedPassword;
     user.resetToken = null;
     user.resetTokenExpiration = undefined;
