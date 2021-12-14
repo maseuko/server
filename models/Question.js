@@ -4,12 +4,21 @@ const path = require("path");
 const CourseManager = require("./CourseManager");
 
 class Question {
-  constructor(courseId, question, correctAnswears, falseAnswears, type, _id) {
+  constructor(
+    courseId,
+    question,
+    correctAnswears,
+    falseAnswears,
+    type,
+    author,
+    _id
+  ) {
     this.courseId = courseId;
     this.question = question;
     this.correctAnswears = correctAnswears;
     this.falseAnswears = falseAnswears;
     this.type = type;
+    this.author = author;
     if (!_id) {
       crypto.randomBytes(32, (err, result) => {
         this._id = result.toString("hex");

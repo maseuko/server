@@ -30,7 +30,10 @@ const userSchema = new Schema(
           type: String,
           required: true,
         },
-        modify: Boolean,
+        modify: {
+          read: Boolean,
+          write: Boolean,
+        },
       },
     ],
     headAdmin: Boolean,
