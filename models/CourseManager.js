@@ -2,9 +2,10 @@ const fs = require("fs");
 const path = require("path");
 const Course = require("./courses");
 const COURSEDB = require("../constants/database").CURRENT_COURSES;
+const SCHOOLS = require("../constants/database").SCHOOLS;
 
 class CourseManager {
-  static async addCourse(courseData) {
+  static async addCourse(courseData, cb) {
     try {
       const course = await Course.findOne({ name: courseData.name.trim() });
 
@@ -43,13 +44,19 @@ class CourseManager {
             });
             const result = await newCourse.save();
             COURSEDB[0].push(result);
-            return {
+            const school = SCHOOLS[0].filter(
+              (s) => s._id.toString() === result.school.toString()
+            )[0];
+            const responseObject = {
               msg: "Course added.",
               course: {
                 name: result.name,
                 _id: result._id.toString(),
+                price: result.price,
+                school: school,
               },
             };
+            cb(responseObject);
           });
         }
       });

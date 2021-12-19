@@ -21,6 +21,10 @@ router.post(
       isEmpty: false,
       errorMessage: "Invalid schoolId !",
     },
+    price: {
+      isEmpty: false,
+      errorMessage: "Incorrect price",
+    },
   }),
   admin.createCourse
 ); // Head admin
