@@ -39,4 +39,6 @@ router.post(
   admin.deleteCourse
 ); // Head admin
 
+router.post("/modify-course", admin.modifyCourse);
+
 module.exports = router;
