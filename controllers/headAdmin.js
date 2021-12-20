@@ -55,12 +55,16 @@ exports.createCourse = async (req, res, next) => {
       err.msg = "School not exists.";
       throw err;
     }
-    const result = await CourseManager.addCourse({
-      name,
-      school: schoolId,
-      price,
-    });
-    res.status(201).json(result);
+    await CourseManager.addCourse(
+      {
+        name,
+        school: schoolId,
+        price,
+      },
+      (obj) => {
+        res.status(201).json(obj);
+      }
+    );
   } catch (err) {
     next(err);
   }
