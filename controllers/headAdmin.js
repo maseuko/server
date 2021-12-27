@@ -21,8 +21,9 @@ exports.addSchool = async (req, res, next) => {
     }
 
     const school = new School({ name: schoolName });
-    const saveResult = school.save();
-    res.status(201).json({ msg: "School added." });
+    const saveResult = await school.save();
+    SCHOOLS[0].push(saveResult);
+    res.status(201).json({ msg: "School added.", school: saveResult });
   } catch (err) {
     next(err);
   }
