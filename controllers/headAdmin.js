@@ -3,6 +3,8 @@ const Course = require("../models/courses");
 const CourseManager = require("../models/CourseManager");
 const validationChecker = require("../utils/validation-checker");
 const User = require("../models/user");
+const COURSES = require("../constants/database").CURRENT_COURSES;
+const SCHOOLS = require("../constants/database").SCHOOLS;
 
 exports.addSchool = async (req, res, next) => {
   const err = new Error();
@@ -55,12 +57,67 @@ exports.createCourse = async (req, res, next) => {
       err.msg = "School not exists.";
       throw err;
     }
-    const result = await CourseManager.addCourse({
-      name,
-      school: schoolId,
-      price,
-    });
-    res.status(201).json(result);
+    await CourseManager.addCourse(
+      {
+        name,
+        school: schoolId,
+        price,
+      },
+      (obj) => {
+        res.status(201).json(obj);
+      }
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.modifyCourse = async (req, res, next) => {
+  const courseId = req.body.courseId;
+  const name = req.body.name;
+  const schoolId = req.body.schoolId;
+  const price = req.body.price;
+  const error = new Error();
+
+  try {
+    const course = await Course.findById(courseId);
+    if (!course) {
+      error.statusCode = 404;
+      error.msg = "Course not found.";
+      throw error;
+    }
+    if (name) {
+      course.name = name;
+    }
+    if (price) {
+      course.price = price;
+    }
+    if (schoolId) {
+      course.school = schoolId;
+    }
+    const modifiedCourse = await course.save();
+
+    const index = COURSES[0].findIndex(
+      (c) => c._id.toString() === courseId.toString()
+    );
+
+    COURSES[0][index] = modifiedCourse;
+    const schoolIndex = SCHOOLS[0].findIndex(
+      (s) => s._id.toString() === modifiedCourse.school.toString()
+    );
+    const responseObject = {
+      _id: modifiedCourse._id,
+      name: modifiedCourse.name,
+      price: modifiedCourse.price,
+      school: {
+        name: SCHOOLS[0][schoolIndex].name,
+        _id: SCHOOLS[0][schoolIndex]._id,
+      },
+    };
+
+    return res
+      .status(202)
+      .json({ msg: "Course modified.", course: responseObject });
   } catch (err) {
     next(err);
   }

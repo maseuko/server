@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
   const token = req.get("token");
   const uid = req.get("uid");
   const rememberToken = req.get("remember");
-
+  console.log(rememberToken);
   let decodedToken;
 
   jwt.verify(token, JWT_SECRET, (err, ver) => {

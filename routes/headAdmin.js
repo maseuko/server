@@ -13,7 +13,6 @@ router.post(
     name: {
       isEmpty: false,
       errorMessage: "Invalid name of course!",
-      isAlphanumeric: true,
       isLength: {
         min: 3,
       },
@@ -21,6 +20,10 @@ router.post(
     schoolId: {
       isEmpty: false,
       errorMessage: "Invalid schoolId !",
+    },
+    price: {
+      isEmpty: false,
+      errorMessage: "Incorrect price",
     },
   }),
   admin.createCourse
@@ -35,5 +38,7 @@ router.post(
   }),
   admin.deleteCourse
 ); // Head admin
+
+router.post("/modify-course", admin.modifyCourse);
 
 module.exports = router;
