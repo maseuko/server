@@ -11,10 +11,6 @@ router.post(
       isEmpty: false,
       errorMessage: "Invalid course id!",
     },
-    questionId: {
-      isEmpty: false,
-      errorMessage: "Invalid question id!",
-    },
   }),
 
   endUserController.fetchAllQuestions

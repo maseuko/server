@@ -95,6 +95,11 @@ class CourseManager {
           } catch (err) {
             throw err;
           }
+        } else {
+          const err = new Error();
+          err.msg = "File not found.";
+          err.statusCode = 404;
+          throw err;
         }
       });
     } catch (err) {
