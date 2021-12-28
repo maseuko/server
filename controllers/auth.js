@@ -15,6 +15,7 @@ const User = require("../models/user");
 //Stale
 const constants = require("../constants/constants");
 const JWT_SECRET = constants.JWT_SECRET;
+const USERS = require("../constants/database").USERS;
 
 sendgrid.setApiKey(constants.SENDGRID_KEY);
 
@@ -76,6 +77,14 @@ exports.login = async (req, res, next) => {
         .status(404)
         .json({ msg: "User with such an email not found." });
     }
+
+    const userIndex = USERS[0].findIndex(
+      (u) => u._id.toString() === user._id.toString()
+    );
+
+    if (!USERS[0][userIndex].sessions) {
+      USERS[0][userIndex].sessions = [];
+    }
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
       return res.status(400).json({ msg: "Passwords not match." });
@@ -103,17 +112,28 @@ exports.login = async (req, res, next) => {
         JWT_SECRET,
         { expiresIn: "30d" }
       );
-
-      userPayload.rememberMeToken = {
-        token: rememberMeToken,
-        expire: new Date().setMonth(new Date().getMonth() + 1),
-      };
+      const expTimeForRememberToken = new Date();
+      expTimeForRememberToken.setMonth(
+        expTimeForRememberToken.getUTCMonth() + 1
+      ),
+        (userPayload.rememberMeToken = {
+          token: rememberMeToken,
+          expire: expTimeForRememberToken,
+        });
     }
-
+    USERS[0][userIndex].sessions.push(userPayload);
+    console.log(USERS[0][userIndex].sessions);
     res
       .setHeader("Content-Type", "application/json")
       .status(200)
-      .json({ msg: "Logged in.", auth: userPayload });
+      .json({
+        msg: "Logged in.",
+        auth: userPayload,
+        permissions: {
+          isHeadAdmin: user.headAdmin,
+          permissionArray: user.permissions,
+        },
+      });
   } catch (err) {
     Err.err(err, next);
   }
@@ -266,5 +286,66 @@ exports.postNewPassword = async (req, res, next) => {
     res.status(202).json({ msg: "Password changed." });
   } catch (err) {
     next(err);
+  }
+};
+
+exports.loginChecker = (req, res, next) => {
+  const uid = req.uid;
+  const token = req.token;
+  const rememberToken = req.rememberToken;
+
+  let TOKEN;
+  let ISVALID = false;
+
+  const userIndex = USERS[0].findIndex(
+    (u) => u._id.toString() === uid.toString()
+  );
+
+  if (userIndex < 0) {
+    return res.status(404).json({ msg: "User not found." });
+  }
+
+  jwt.verify(token, (err, ver) => {
+    if (err) {
+      jwt.verify(rememberToken, (err2, ver2) => {
+        if (err2) {
+          return res.status(401).json({ msg: "Tokens not match." });
+        }
+        const expTimeForToken = new Date();
+        expTimeForToken.setHours(expTimeForToken.getHours() + 1);
+        const token = jwt.sign(
+          {
+            uid: user._id.toString(),
+          },
+          JWT_SECRET,
+          { expiresIn: "1h" }
+        );
+        TOKEN = token;
+        TOKEN.expire = expTimeForToken;
+      });
+    } else {
+      ISVALID = true;
+    }
+  });
+
+  if (TOKEN || ISVALID) {
+    if (TOKEN) {
+      return res.status(200).json({
+        newToken: TOKEN,
+        permissions: {
+          isHeadAdmin: USERS[0][userIndex].headAdmin,
+          permissionArray: USERS[0][userIndex].permissions,
+        },
+      });
+    } else {
+      return res.status(200).json({
+        permissions: {
+          isHeadAdmin: USERS[0][userIndex].headAdmin,
+          permissionArray: USERS[0][userIndex].permissions,
+        },
+      });
+    }
+  } else {
+    return res.status(401).json({ msg: "Unauthorized." });
   }
 };
