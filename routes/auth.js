@@ -103,4 +103,20 @@ router.post(
   authController.postNewPassword
 );
 
+router.post(
+  "/login-checker",
+  checkSchema({
+    uid: {
+      isEmpty: false,
+    },
+    token: {
+      isEmpty: false,
+    },
+    rememberToken: {
+      isEmpty: false,
+    },
+  }),
+  authController.loginChecker
+);
+
 module.exports = router;

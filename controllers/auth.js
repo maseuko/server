@@ -290,11 +290,17 @@ exports.postNewPassword = async (req, res, next) => {
 };
 
 exports.loginChecker = (req, res, next) => {
-  const uid = req.uid;
-  const token = req.token;
-  const rememberToken = req.rememberToken;
+  const uid = req.body.uid;
+  const token = req.body.token;
+  const rememberToken = req.body.rememberToken;
 
-  let TOKEN;
+  try {
+    validationChecker(req);
+  } catch (err) {
+    next(err);
+  }
+
+  const TOKEN = {};
   let ISVALID = false;
 
   const userIndex = USERS[0].findIndex(
@@ -305,9 +311,15 @@ exports.loginChecker = (req, res, next) => {
     return res.status(404).json({ msg: "User not found." });
   }
 
-  jwt.verify(token, (err, ver) => {
+  if (USERS[0][userIndex].sessions) {
+    const isInSession = USERS[0][userIndex].sessions.forEach((s) =>
+      console.log(s)
+    );
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, ver) => {
     if (err) {
-      jwt.verify(rememberToken, (err2, ver2) => {
+      jwt.verify(rememberToken, JWT_SECRET, (err2, ver2) => {
         if (err2) {
           return res.status(401).json({ msg: "Tokens not match." });
         }
@@ -320,7 +332,7 @@ exports.loginChecker = (req, res, next) => {
           JWT_SECRET,
           { expiresIn: "1h" }
         );
-        TOKEN = token;
+        TOKEN.token = token;
         TOKEN.expire = expTimeForToken;
       });
     } else {
@@ -328,8 +340,8 @@ exports.loginChecker = (req, res, next) => {
     }
   });
 
-  if (TOKEN || ISVALID) {
-    if (TOKEN) {
+  if (TOKEN.token || ISVALID) {
+    if (TOKEN.token) {
       return res.status(200).json({
         newToken: TOKEN,
         permissions: {
