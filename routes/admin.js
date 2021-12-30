@@ -8,10 +8,13 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, "../images/"));
   },
   filename: (req, file, cb) => {
+    const fileNameParts = file.originalname.split(" ");
+    let fileName = "";
+    for (let i of fileNameParts) {
+      fileName += `_${i}`;
+    }
     const currentDate = new Date();
-    const name = `${currentDate.getDay()}_${currentDate.getMonth()}_${currentDate.getFullYear()}_${currentDate.getHours()}_${currentDate.getMinutes()}_${currentDate.getSeconds()}_${
-      file.originalname
-    }`;
+    const name = `${currentDate.getDay()}_${currentDate.getMonth()}_${currentDate.getFullYear()}_${currentDate.getHours()}_${currentDate.getMinutes()}_${currentDate.getSeconds()}_${fileName}`;
     cb(null, name);
   },
 });
