@@ -21,12 +21,7 @@ exports.addQuestion = (req, res, next) => {
     const file = req.files.filter(
       (jpg) => jpg.originalname === question.imageName
     );
-<<<<<<< HEAD
-    console.log(file);
-    question.url = `localhost:8080\/images\/${file[0].filename}`;
-=======
     question.url = `http://localhost:8080\/images\/${file[0].filename}`;
->>>>>>> cf8dc28f193121739648e20b377f7810ad771585
   }
 
   for (let corrAnswear of correctAnswears) {
