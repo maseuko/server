@@ -11,7 +11,7 @@ exports.fetchAllQuestions = (req, res, next) => {
   }
 
   CourseManager.fetchAll(courseId, (questions) => {
-    res.status(200).json({ questions });
+    res.status(200).json( questions );
   });
 };
 
