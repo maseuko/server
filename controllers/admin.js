@@ -87,7 +87,6 @@ exports.modifyQuestion = (req, res, next) => {
     const lookingQuestion = data.filter(
       (q) => q._id.toString() === questionId.toString()
     )[0];
-
     if (
       (lookingQuestion.question.type === "mixed" ||
         question.type === "mixed") &&
@@ -107,7 +106,7 @@ exports.modifyQuestion = (req, res, next) => {
       }
     }
 
-    for (let i = 0; i < correctAnswears.length; i++) {
+    for (let i = 0; i < lookingQuestion.correctAnswears.length; i++) {
       const ran = correctAnswears[i];
       const oran = lookingQuestion.correctAnswears[i];
       if (
@@ -131,7 +130,7 @@ exports.modifyQuestion = (req, res, next) => {
       correctAnswears[i] = ran;
     }
 
-    for (let i = 0; i < falseAnswears.length; i++) {
+    for (let i = 0; i < lookingQuestion.falseAnswears.length; i++) {
       const fan = falseAnswears[i];
       const ofan = lookingQuestion.falseAnswears[i];
       if (
