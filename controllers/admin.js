@@ -106,10 +106,21 @@ exports.modifyQuestion = (req, res, next) => {
       }
     }
 
-    for (let i = 0; i < lookingQuestion.correctAnswears.length; i++) {
+    for (let i = 0; i < correctAnswears.length; i++) {
       const ran = correctAnswears[i];
-      const oran = lookingQuestion.correctAnswears[i];
+      let oran = lookingQuestion.correctAnswears[i];
+
+      if (!oran) {
+        if (ran.type === "mixed") {
+          const file = req.files.filter(
+            (jpg) => jpg.originalname === ran.imageName
+          );
+          ran.url = `http://localhost:8080\/images\/${file[0].filename}`;
+        }
+      }
+
       if (
+        oran &&
         (oran.type === "mixed" || ran.type === "mixed") &&
         ran.type !== "text"
       ) {
@@ -130,10 +141,19 @@ exports.modifyQuestion = (req, res, next) => {
       correctAnswears[i] = ran;
     }
 
-    for (let i = 0; i < lookingQuestion.falseAnswears.length; i++) {
+    for (let i = 0; i < falseAnswears.length; i++) {
       const fan = falseAnswears[i];
       const ofan = lookingQuestion.falseAnswears[i];
+      if (!ofan) {
+        if (fan.type === "mixed") {
+          const file = req.files.filter(
+            (jpg) => jpg.originalname === fan.imageName
+          );
+          fan.url = `http://localhost:8080\/images\/${file[0].filename}`;
+        }
+      }
       if (
+        ofan &&
         (ofan.type === "mixed" || fan.type === "mixed") &&
         fan.type !== "text"
       ) {

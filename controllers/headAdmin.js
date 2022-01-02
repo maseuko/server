@@ -31,6 +31,7 @@ exports.addSchool = async (req, res, next) => {
 
 exports.removeSchool = async (req, res, next) => {
   const schoolId = req.body.schoolId;
+  // console.log(schoolId);
   try {
     School.findByIdAndDelete(schoolId);
     const courses = await Course.find({ school: schoolId });
@@ -39,6 +40,10 @@ exports.removeSchool = async (req, res, next) => {
         CourseManager.removeCourse(course._id.toString());
       }
     }
+    const updatedDB = SCHOOLS[0].filter(
+      (s) => s._id.toString() !== schoolId.toString()
+    );
+    SCHOOLS[0] = updatedDB;
     res.status(200).json({ msg: "School removed." });
   } catch (err) {
     next(err);
