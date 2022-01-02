@@ -162,7 +162,6 @@ exports.modifyQuestion = (req, res, next) => {
           ofan.imageName !== fan.imageName ||
           i >= lookingQuestion.falseAnswears.length
         ) {
-          console.log(lookingQuestion.correctAnswears.length)
           const file = req.files.filter(
             (jpg) => jpg.originalname.toString() === fan.imageName.toString()
           )[0];
