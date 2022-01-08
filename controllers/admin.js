@@ -5,7 +5,6 @@ const validationChecker = require("../utils/validation-checker");
 const USERSDB = require("../constants/database").USERS;
 
 exports.addQuestion = (req, res, next) => {
-  console.log(req.body.question);
   const question = JSON.parse(req.body.question);
   const courseId = req.body.courseId;
   const correctAnswears = JSON.parse(req.body.correctAnswears);
@@ -17,7 +16,6 @@ exports.addQuestion = (req, res, next) => {
   );
 
   if (question.type === "mixed") {
-    console.log(req.files);
     const file = req.files.filter(
       (jpg) => jpg.originalname === question.imageName
     );

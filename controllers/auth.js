@@ -122,7 +122,6 @@ exports.login = async (req, res, next) => {
         });
     }
     USERS[0][userIndex].sessions.push(userPayload);
-    console.log(USERS[0][userIndex].sessions);
     res
       .setHeader("Content-Type", "application/json")
       .status(200)
@@ -180,7 +179,6 @@ exports.getReset = (req, res, next) => {
     const token = buffer.toString("hex");
 
     try {
-      console.log(req.body);
       validationChecker(req);
 
       const user = await User.findOne({ email: req.body.email });
@@ -312,9 +310,7 @@ exports.loginChecker = (req, res, next) => {
   }
 
   if (USERS[0][userIndex].sessions) {
-    const isInSession = USERS[0][userIndex].sessions.forEach((s) =>
-      console.log(s)
-    );
+    const isInSession = USERS[0][userIndex].sessions.forEach((s) => {});
   }
 
   jwt.verify(token, JWT_SECRET, (err, ver) => {
@@ -327,7 +323,7 @@ exports.loginChecker = (req, res, next) => {
         expTimeForToken.setHours(expTimeForToken.getHours() + 1);
         const token = jwt.sign(
           {
-            uid: user._id.toString(),
+            uid: USERS[0][userIndex]._id.toString(),
           },
           JWT_SECRET,
           { expiresIn: "1h" }

@@ -5,6 +5,7 @@ const validationChecker = require("../utils/validation-checker");
 const User = require("../models/user");
 const COURSES = require("../constants/database").CURRENT_COURSES;
 const SCHOOLS = require("../constants/database").SCHOOLS;
+const USERS = require("../constants/database").USERS;
 
 exports.addSchool = async (req, res, next) => {
   const err = new Error();
@@ -29,9 +30,30 @@ exports.addSchool = async (req, res, next) => {
   }
 };
 
+exports.modifySchoolName = async (req, res, next) => {
+  const schoolId = req.body.schoolId;
+  const name = req.body.name;
+  try {
+    const school = await School.findById(schoolId);
+    const schoolDbId = SCHOOLS[0].findIndex(
+      (s) => s._id.toString() === schoolId.toString()
+    );
+    if (!school && schoolDbId < 0) {
+      return res.status(404).json({ msg: "School not found." });
+    }
+
+    school.name = name;
+    const save = await school.save();
+    SCHOOLS[0][schoolDbId].name = name;
+
+    res.status(202).json({ msg: "School name updated.", school: save });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.removeSchool = async (req, res, next) => {
   const schoolId = req.body.schoolId;
-  // console.log(schoolId);
   try {
     School.findByIdAndDelete(schoolId);
     const courses = await Course.find({ school: schoolId });
@@ -143,7 +165,7 @@ exports.deleteCourse = async (req, res, next) => {
 exports.grantAccess = async (req, res, next) => {
   const uid = req.body.uid;
   const courseId = req.body.courseId;
-  const modify = req.body.modify;
+  const write = req.body.write;
 
   try {
     const user = await User.findById(uid);
@@ -153,17 +175,84 @@ exports.grantAccess = async (req, res, next) => {
     const index = user.permissions.findIndex(
       (p) => p.courseId.toString() === courseId.toString()
     );
+    const userIndex = USERS[0].findIndex(
+      (u) => u._id.toString() === uid.toString()
+    );
+    if (userIndex < 0) {
+      return res.status(404).json({ msg: "User not found" });
+    }
     if (!(index >= 0)) {
-      user.permissions.push({ courseId, modify });
-      await user.save();
-      return res.status(202).json({ msg: "Access granted." });
+      user.permissions.push({
+        courseId,
+        modify: {
+          read: true,
+          write: !!write,
+        },
+      });
+
+      const result = await user.save();
+      USERS[0][userIndex].permissions = result.permissions;
+      console.log(result);
+      return res.status(202).json({
+        msg: "Access granted.",
+        permissions: USERS[0][userIndex].permissions,
+      });
     }
 
-    user.permissions[index].modify = modify;
+    user.permissions[index].modify.write = !!write;
 
-    await user.save();
-    return res.status(202).json({ msg: "Access updated." });
+    const res2 = await user.save();
+    USERS[0][userIndex].permissions = res2.permissions;
+    // console.log(res2);
+    return res.status(202).json({
+      msg: "Access updated.",
+      permissions: USERS[0][userIndex].permissions,
+    });
   } catch (err) {
     next(err);
   }
+};
+
+exports.removeAccess = async (req, res, next) => {
+  const uid = req.body.uid;
+  const courseId = req.body.courseId;
+  try {
+    const user = await User.findById(uid);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found." });
+    }
+
+    const userIndex = USERS[0].findIndex(
+      (u) => u._id.toString() === uid.toString()
+    );
+
+    if (userIndex < 0) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    const filteredDB = USERS[0][userIndex].permissions.filter(
+      (p) => p.courseId.toString() !== courseId.toString()
+    );
+
+    user.permissions = filteredDB;
+
+    const result = await user.save();
+    USERS[0][userIndex].permissions = result.permissions;
+    return res.status(202).json({
+      msg: "Access granted.",
+      permissions: USERS[0][userIndex].permissions,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.fetchAllUsers = (req, res, next) => {
+  const finalData = USERS[0].map((u) => ({
+    _id: u._id,
+    username: u.username,
+    permissions: u.permissions,
+    isHeadAdmin: u.headAdmin,
+  }));
+  return res.status(200).json({ users: finalData });
 };

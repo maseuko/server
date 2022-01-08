@@ -7,6 +7,7 @@ const admin = require("../controllers/headAdmin");
 
 router.post("/add-school", admin.addSchool);
 router.post("/remove-school", admin.removeSchool);
+router.post("/update-school-name", admin.modifySchoolName);
 router.post(
   "/add-course",
   checkSchema({
@@ -40,5 +41,8 @@ router.post(
 ); // Head admin
 
 router.post("/modify-course", admin.modifyCourse);
+router.get("/get-all-users", admin.fetchAllUsers);
+router.post("/grant-access", admin.grantAccess);
+router.post("/remove-user-access", admin.removeAccess);
 
 module.exports = router;
