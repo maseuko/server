@@ -203,7 +203,7 @@ exports.grantAccess = async (req, res, next) => {
 
     const res2 = await user.save();
     USERS[0][userIndex].permissions = res2.permissions;
-    // console.log(res2);
+
     return res.status(202).json({
       msg: "Access updated.",
       permissions: USERS[0][userIndex].permissions,

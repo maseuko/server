@@ -30,4 +30,7 @@ router.post(
   endUserController.fetchSingleQuestion
 );
 
+router.post("/send-email", endUserController.sendEmail);
+router.post("/get-all-messages", endUserController.getAllMessages);
+
 module.exports = router;
