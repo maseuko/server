@@ -16,7 +16,10 @@ exports.getAllCourses = (req, res, next) => {
     return {
       _id: element._id,
       name: element.name,
-      school: element.school,
+      school: SCHOOLS[0].filter(
+        (s) => s._id.toString() === element.school.toString()
+      )[0],
+      price: element.price,
     };
   });
 

@@ -47,14 +47,19 @@ module.exports = class Messages {
         throw error;
       }
       messages[msgIndex].readed = true;
+      fs.writeFile(filePath, JSON.stringify(messages), () => {});
     });
   }
 
-  static deleteMessage(msgId) {
+  static deleteMessage(msgIds) {
     Messages.fetchAllMessages((messages) => {
-      const newDb = messages.filter(
-        (m) => m._id.toString() !== msgId.toString()
-      );
+      let newDb = messages;
+
+      for (const msgId of msgIds) {
+        const tmp = newDb.filter((m) => m._id.toString() !== msgId.toString());
+        newDb = tmp;
+      }
+
       fs.writeFile(filePath, JSON.stringify(newDb), () => {});
     });
   }

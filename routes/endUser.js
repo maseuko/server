@@ -32,5 +32,7 @@ router.post(
 
 router.post("/send-email", endUserController.sendEmail);
 router.post("/get-all-messages", endUserController.getAllMessages);
+router.post("/email-readed", endUserController.mailReaded);
+router.post("/delete-messages", endUserController.deleteMessage);
 
 module.exports = router;

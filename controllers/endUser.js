@@ -73,8 +73,8 @@ exports.mailReaded = (req, res, next) => {
 };
 
 exports.deleteMessage = (req, res, next) => {
-  const messId = req.body._id;
-  Messages.deleteMessage(messId);
+  const messIds = req.body._ids;
+  Messages.deleteMessage(messIds);
   return res.status(200).json("Message deleted.");
 };
 

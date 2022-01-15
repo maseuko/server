@@ -21,6 +21,7 @@ const images = require("./routes/images");
 const user = require("./routes/endUser");
 const headAdmin = require("./routes/headAdmin");
 const defaultData = require("./routes/defaultData");
+const checkout = require("./routes/checkout");
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(defaultData);
 app.use(auth);
 app.use(images);
+app.use(checkout);
 app.use([isAuth], admin);
 app.use([isAuth], user);
 app.use([isAuth, isHeadAdmin], headAdmin);
