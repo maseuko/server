@@ -34,6 +34,9 @@ const userSchema = new Schema(
           read: Boolean,
           write: Boolean,
         },
+        date: {
+          type: Date,
+        },
       },
     ],
     headAdmin: Boolean,
