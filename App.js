@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const isHeadAdmin = require("./middlewares/is-head-admin");
 const isAuth = require("./middlewares/is-auth");
@@ -23,20 +25,16 @@ const headAdmin = require("./routes/headAdmin");
 const defaultData = require("./routes/defaultData");
 const checkout = require("./routes/checkout");
 
-const app = express();
+const socketConnection = require("./socket/socket-connection");
 
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader(
-//     "Access-Control-Allow-Methods",
-//     "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-//   );
-//   res.setHeader(
-//     "Access-Control-Allow-Headers",
-//     "X-Requested-With,content-type"
-//   );
-//   next();
-// });
+const app = express();
+const server = http.Server(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
 
 app.use(cors());
 
@@ -57,6 +55,16 @@ app.use((err, req, res, next) => {
     return res.status(err.statusCode).json({ msg: err });
   }
   res.status(500).json({ msg: "Server failed." });
+});
+
+io.on("connection", (socket) => {
+  console.log(`User connected: ${socket.id}`);
+  const arr = Array.from(io.sockets.adapter.rooms);
+  console.log(arr);
+  socket.to(socket.id).emit("cos", { cos: "aaaaa" });
+  socketConnection.user_logged_in(socket);
+  socketConnection.disconnect(socket);
+  socketConnection.look_for_session(socket);
 });
 
 mongoose
@@ -83,7 +91,7 @@ mongoose
         throw err;
       }
       USERDB.push(user);
-      app.listen(8080);
+      server.listen(8080);
     });
   })
   .catch(() => {
