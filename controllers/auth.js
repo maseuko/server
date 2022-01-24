@@ -49,7 +49,7 @@ exports.register = async (req, res, next) => {
         subject: "Witaj na pokladzie!",
         html: `<h1>Cześć ${username}</h1>
                         <p>Potwierdz swoje konto klikając w link: <a href="${
-                          "http://localhost:3000/" +
+                          `${process.env.FRONTEND_HOST}/` +
                           savedUser._id.toString() +
                           "/" +
                           token
@@ -200,7 +200,9 @@ exports.getReset = (req, res, next) => {
         html: `<h1>Cześć ${user.username}</h1>
                         <p>Chcesz zresetowac swoje haslo.</p>
                         <p>Aby to zrobic, kliknij w link: <a href=
-                          "http://localhost:3000/authorize/reset/${user._id.toString()}/${token}">Zresetuj haslo</a></p>
+                          "${
+                            process.env.FRONTEND_HOST
+                          }/authorize/reset/${user._id.toString()}/${token}">Zresetuj haslo</a></p>
                 `,
       });
       res.status(200).json({ msg: "Sendend reset mail." });

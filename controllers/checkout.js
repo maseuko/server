@@ -2,9 +2,7 @@ const COURSES = require("../constants/database").CURRENT_COURSES;
 const USERS = require("../constants/database").USERS;
 const User = require("../models/user");
 
-const stripe = require("stripe")(
-  "sk_test_51JyxVpGlGt0q5M6YFtzaBubgCOfi1m6dvWAZZh5YUy3pNEYnXR68DrGZXPOTAX2YHsCmqkzdNaUbtLDy4r4s0jfg00Tz8u3xfQ"
-);
+const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
 exports.getCheckout = async (req, res, next) => {
   const productIds = req.body.products;
