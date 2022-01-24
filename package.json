@@ -23,5 +23,8 @@
     "nodemon": "^2.0.13",
     "socket.io": "^4.4.1",
     "stripe": "^8.197.0"
+  },
+  "engines": {
+    "node": "v16.3.0"
   }
 }
