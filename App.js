@@ -91,7 +91,7 @@ mongoose
         throw err;
       }
       USERDB.push(user);
-      server.listen(8080);
+      server.listen(process.env.PORT);
     });
   })
   .catch(() => {
