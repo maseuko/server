@@ -19,7 +19,7 @@ exports.addQuestion = (req, res, next) => {
     const file = req.files.filter(
       (jpg) => jpg.originalname === question.imageName
     );
-    question.url = `http://localhost:8080\/images\/${file[0].filename}`;
+    question.url = `https://fiszkandoserv.herokuapp.com\/images\/${file[0].filename}`;
   }
 
   for (let corrAnswear of correctAnswears) {
@@ -27,7 +27,7 @@ exports.addQuestion = (req, res, next) => {
       const file = req.files.filter(
         (jpg) => jpg.originalname === corrAnswear.imageName
       );
-      corrAnswear.url = `http://localhost:8080\/images\/${file[0].filename}`;
+      corrAnswear.url = `https://fiszkandoserv.herokuapp.com\/images\/${file[0].filename}`;
     }
   }
 
@@ -36,7 +36,7 @@ exports.addQuestion = (req, res, next) => {
       const file = req.files.filter(
         (jpg) => jpg.originalname === falseAnswear.imageName
       );
-      falseAnswear.url = `http://localhost:8080\/images\/${file[0].filename}`;
+      falseAnswear.url = `https://fiszkandoserv.herokuapp.com\/images\/${file[0].filename}`;
     }
   }
   const pytanie = new Question(
@@ -98,7 +98,7 @@ exports.modifyQuestion = (req, res, next) => {
           (jpg) => jpg.originalname.toString() === question.imageName.toString()
         )[0];
         filesToDetach.push(lookingQuestion.question.url.split("/")[2]);
-        question.url = `http://localhost:8080\/images\/${file.filename}`;
+        question.url = `https://fiszkandoserv.herokuapp.com\/images\/${file.filename}`;
       } else {
         question.url = lookingQuestion.question.url;
       }
@@ -113,7 +113,7 @@ exports.modifyQuestion = (req, res, next) => {
           const file = req.files.filter(
             (jpg) => jpg.originalname === ran.imageName
           );
-          ran.url = `http://localhost:8080\/images\/${file[0].filename}`;
+          ran.url = `https://fiszkandoserv.herokuapp.com\/images\/${file[0].filename}`;
         }
       }
 
@@ -131,7 +131,7 @@ exports.modifyQuestion = (req, res, next) => {
             (jpg) => jpg.originalname.toString() === ran.imageName.toString()
           )[0];
           oran.url && filesToDetach.push(oran.url.split("/")[2]);
-          ran.url = `http://localhost:8080\/images\/${file.filename}`;
+          ran.url = `https://fiszkandoserv.herokuapp.com\/images\/${file.filename}`;
         } else {
           ran.url = oran.url;
         }
@@ -147,7 +147,7 @@ exports.modifyQuestion = (req, res, next) => {
           const file = req.files.filter(
             (jpg) => jpg.originalname === fan.imageName
           );
-          fan.url = `http://localhost:8080\/images\/${file[0].filename}`;
+          fan.url = `https://fiszkandoserv.herokuapp.com\/images\/${file[0].filename}`;
         }
       }
       if (
@@ -164,7 +164,7 @@ exports.modifyQuestion = (req, res, next) => {
             (jpg) => jpg.originalname.toString() === fan.imageName.toString()
           )[0];
           ofan.url && filesToDetach.push(ofan.url.split("/")[2]);
-          fan.url = `http://localhost:8080\/images\/${file.filename}`;
+          fan.url = `https://fiszkandoserv.herokuapp.com\/images\/${file.filename}`;
         } else {
           fan.url = ofan.url;
         }
