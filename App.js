@@ -69,7 +69,7 @@ io.on("connection", (socket) => {
 
 mongoose
   .connect(
-    `mongodb+srv://fiszki:${process.env.MONGO_DB}@cluster0.tveju.mongodb.net/fiszki?retryWrites=true&w=majority`
+    process.env.MONGO
   )
   .then((res) => {
     Course.find({}, (err, course) => {
